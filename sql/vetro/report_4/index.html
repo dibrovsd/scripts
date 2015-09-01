@@ -1,0 +1,11 @@
+{% if get.measure %}
+    {{tables.detail}}
+
+{% else %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{forms.f}}
+        </div>
+    </div>
+    {{tables.gr}}
+{% endif %}

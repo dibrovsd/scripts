@@ -1,0 +1,11 @@
+pg_dump --format=c --host=localhost --username=django django_hosting > django_hosting.bk
+
+drop database django_hosting;
+create database django_hosting;
+
+alter database django_hosting owner to django;
+alter database django_hosting set timezone = 'UTC';
+alter database django_hosting set default_transaction_isolation = 'read committed';
+alter database django_hosting set client_encoding = 'UTF8';
+
+pg_restore --dbname=django_hosting --format=c --single-transaction --host=localhost --username=django < django_hosting.bk

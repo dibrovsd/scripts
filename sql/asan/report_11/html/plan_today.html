@@ -1,0 +1,51 @@
+<div id="plan_today" style="height:450px; width:100%;"></div>
+<script>
+    $(document).ready(function() {
+            AmCharts.makeChart("plan_today", {
+                "theme": "light",
+                "type": "serial",
+                "depth3D": 100,
+                "angle": 30,
+                "dataProvider": {{ datasets.plan_today.json }},
+                "valueAxes": [{
+                    "stackType": "100%",
+                    "gridAlpha": 0
+                }],
+                "graphs": [{
+                    "type": "column",
+                    "topRadius": 1,
+                    "lineColor": "#008000",
+                    "columnWidth": 1,
+                    "showOnAxis": true,
+                    "lineThickness": 2,
+                    "lineAlpha": 0.5,
+                    "fillAlphas": 0.9,
+                    "labelText": "[[value]]",
+                    "labelOffset": -10,
+                    "labelPosition": "middle",
+                    "color": "white",
+                    "fontSize": 18,
+                    "valueField": "cnt_sales"
+                }, {
+                    "type": "column",
+                    "topRadius": 1,
+                    "columnWidth": 1,
+                    "showOnAxis": true,
+                    "lineThickness": 2,
+                    "lineAlpha": 0.5,
+                    "lineColor": "#cdcdcd",
+                    "fillColors": "#cdcdcd",
+                    "fillAlphas": 0.5,
+                    "valueField": "plan"
+                }],
+
+                "categoryField": "category",
+                "categoryAxis": {
+                    "axisAlpha": 0,
+                    "labelOffset": 40,
+                    "gridAlpha": 0,
+                    "fontSize": 18,
+                }
+            })
+        }) // ready
+</script>

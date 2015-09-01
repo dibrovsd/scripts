@@ -1,0 +1,50 @@
+<script>
+    function reload_delay() {
+        window.location.replace('/reports/11/?response_type=body')
+    }
+    setTimeout(reload_delay, 1024 * 20)
+
+</script>
+
+<style>
+    #plan_alert {
+        display: none;
+    }
+</style>
+
+{# <pre>{{datasets.sales_day.sql}}</pre> #}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Продажи за сегодня</h4>
+            {{html.sales_day}}
+
+            <h4>Выполнение плана за неделю ОСАГО {{datasets.plan_week.data.0.plan_ratio}}%</h4>
+            {{html.plan_week}}
+
+        </div>
+        <div class="col-md-4">
+            <h4>Задача на сегодня</h4>
+
+            <div id="plan_alert" class="alert alert-danger">
+                ALERT!!!
+            </div>
+
+            {{html.plan_today}}
+
+            <h4>Продажи за сегодня</h4>
+            {{tables.sales_by_product}}
+
+            <script>
+                var current_date = new Date()
+
+                // Сколько осталось до выполнения плана
+                var cnt_to_day_plan = {{datasets.plan_today.data.0.plan}}
+                if(current_date.getHours() >= 17 && cnt_to_day_plan > 0) {
+                    $('#plan_alert').show()
+                }
+            </script>
+        </div>
+    </div>
+</div>

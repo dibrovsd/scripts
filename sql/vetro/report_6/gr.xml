@@ -1,0 +1,21 @@
+<xml>
+    <table field_row_style="row_style"/>
+    <fields>
+        <field display='0' name='row_style'/>
+        <field display='0' name='region'/>
+        <field display='0' name='inscompany_id'/>
+
+        <field name='cnt' classes="number" lnk="?m=summary&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum' classes="number" lnk="?m=summary&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+
+        <field name='cnt_lt_15' classes="number" lnk="?m=lt_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_lt_15' classes="number" lnk="?m=lt_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='cnt_gte_15' classes="number" lnk="?m=gte_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_gte_15' classes="number" lnk="?m=gte_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='cnt_gte_30' classes="number" lnk="?m=gte_30&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_gte_30' classes="number" lnk="?m=gte_30&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='cnt_gte_60' classes="number" lnk="?m=gte_60&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_gte_60' classes="number" lnk="?m=gte_60&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+
+    </fields>
+</xml>

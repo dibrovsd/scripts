@@ -1,0 +1,49 @@
+<div id="plan_week" style="height:250px; width:100%;"></div>
+<script>
+
+$(document).ready(function() {
+    AmCharts.makeChart("plan_week", {
+        "type": "serial",
+    	"theme": "light",
+        "legend": {
+            "position": "bottom",
+            "fontSize": 14,
+        },
+        "dataProvider": {{datasets.plan_week.json}},
+        "valueAxes": [{
+            "stackType": "regular",
+            "axisAlpha": 0.5,
+            "gridAlpha": 0
+        }],
+        "graphs": [
+            {% for u in datasets.users.data %}
+                {
+                "fillAlphas": 0.8,
+                "labelText": "[[value]]",
+                "lineAlpha": 0.3,
+                "title": "{{u.title}}",
+                "type": "column",
+        		"color": "#000000",
+                "valueField": "{{u.title}}"
+                },
+            {% endfor %}
+            {
+                "bullet": "round",
+                "lineThickness": 3,
+                "bulletSize": 7,
+                "bulletBorderAlpha": 1,
+                "bulletColor": "#FFFFFF",
+                "useLineColorForBulletBorder": true,
+                "bulletBorderThickness": 3,
+                "fillAlphas": 0,
+                "lineAlpha": 1,
+                "valueField": "plan_week",
+                "title": "План"
+            }
+        ],
+        "rotate": true,
+        "categoryField": "all_users",
+
+    })
+})
+</script>

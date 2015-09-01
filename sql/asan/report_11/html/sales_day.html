@@ -1,0 +1,36 @@
+<div id="sales_day" style="height:400px; width:100%;"></div>
+<script>
+    $(document).ready(function() {
+        AmCharts.makeChart("sales_day", {
+            "type": "serial",
+            "theme": "light",
+            "dataProvider": {{datasets.sales_day.json}},
+            "gridAboveGraphs": true,
+            "startDuration": 1,
+            "graphs": [{
+                "balloonText": "[[category]]: <b>[[value]]</b>",
+                "fillAlphas": 0.8,
+                "lineAlpha": 0.2,
+                "type": "column",
+                "valueField": "cnt",
+            }, {
+                "lineColor": "red",
+                "lineThickness": 2,
+                "valueField": "plan_day_user"
+            }, ],
+            "chartCursor": {
+                "categoryBalloonEnabled": false,
+                "cursorAlpha": 0,
+                "zoomable": false
+            },
+            "categoryAxis": {
+                "gridPosition": "start",
+                "labelRotation": 45,
+                "fontSize": 14,
+
+            },
+            "categoryField": "user",
+
+        })
+    })
+</script>
