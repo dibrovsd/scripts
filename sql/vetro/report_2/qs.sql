@@ -175,10 +175,6 @@ measures as (
     select 'Генерация счета' as title,
            10 as doc_state, null as task_type, null as task_state, 11 as num
 
-    union all
-    select 'Укомплектование дела' as title,
-           9 as doc_state, null as task_type, null as task_state, 12 as num
-
     {% if not 'stoa' in user_params.roles %}
     union all
     select 'Ожидание оплаты' as title,
