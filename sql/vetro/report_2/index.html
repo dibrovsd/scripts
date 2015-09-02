@@ -1,0 +1,61 @@
+{% if get.m %}
+    <a href="?">К началу</a>
+{% endif %}
+
+{% if get.m == 'document' %}
+    <h4>Детализация документов</h4>
+
+    {% if not 'stoa' in user_params.roles %}
+        <a href="?response_type=xls&xls=detail_document&{{query_string}}" class='btn btn-success'>В Excel</a>
+    {% endif %}
+    {{tables.detail_document}}
+
+{% elif get.m == 'task' %}
+    <h4>Детализация задач</h4>
+    {% if not 'stoa' in user_params.roles %}
+        <a href="?response_type=xls&xls=detail_task&{{query_string}}" class='btn btn-success'>В Excel</a>
+    {% endif %}
+    {{tables.detail_task}}
+
+{% else %}
+    <div class="well well-sm">{{forms.f}}</div>
+    {% if env.city_auto_host and env.inscompany %}
+        {{tables.t}}
+        <style>
+            td.cnt_0_2 {
+                background-color: #F0FFF0;
+            }
+            td.cnt_3_5 {
+                background-color: #FFEFD5;
+            }
+            td.cnt_6_10 {
+                background-color: #FFEBCD;
+            }
+            td.cnt_11_20 {
+                background-color: #FFE4C4;
+            }
+            td.cnt_20 {
+                background-color: #FFDAB9;
+            }
+        </style>
+
+    {% else %}
+        <div class="alert alert-info">
+            Выберите параметры поиска
+        </div>
+
+    {% endif %}
+
+    <script type="text/javascript">
+        {% if 'customer_service' in user_params.roles %}
+            $('.curator').hide()
+
+        {% elif 'stoa' in user_params.roles %}
+            $('.city_auto_host').hide()
+
+        {% endif %}
+
+    </script>
+
+
+{% endif %}

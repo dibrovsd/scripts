@@ -134,9 +134,11 @@ measures as (
     select 'Приглашение на осмотр' as title,
            2 as doc_state, null as task_type, null as task_state, 3 as num
 
+    {% if not 'stoa' in user_params.roles %}
     union all
     select 'Ожидание решения СК о смене СТОА' as title,
            15 as doc_state, null as task_type, null as task_state, 4 as num
+    {% endif %}
 
     union all
     select 'Согласование стекла с клиентом' as title,
@@ -177,9 +179,11 @@ measures as (
     select 'Укомплектование дела' as title,
            9 as doc_state, null as task_type, null as task_state, 12 as num
 
+    {% if not 'stoa' in user_params.roles %}
     union all
     select 'Ожидание оплаты' as title,
            11 as doc_state, null as task_type, null as task_state, 14 as num
+    {% endif %}
 
     union all
     select 'СТОА' as title,

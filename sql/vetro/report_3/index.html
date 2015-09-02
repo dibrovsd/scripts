@@ -1,0 +1,51 @@
+{% if get.detail %}
+    <a href="?">Назад</a>
+
+    {% if not 'stoa' in user_params.roles %}
+    <a href="?response_type=xls&xls=detail&{{query_string}}" class='btn btn-success'>В Excel</a>
+    {% endif %}
+
+    {{tables.detail}}
+    {# <pre>{{datasets.detail.sql}}</pre> #}
+
+{% else %}
+    <div class="well well-sm">{{forms.f}}</div>
+    <script type="text/javascript">
+        {% if 'customer_service' in user_params.roles %}
+            $('.curator').hide()
+
+        {% elif 'stoa' in user_params.roles %}
+            $('.city_auto_host').hide()
+
+        {% endif %}
+    </script>
+
+    {% if env.city_auto_host %}
+        {{tables.t}}
+
+        <style>
+            .color1 {
+                background-color: #FFEFD5;
+            }
+            .color2 {
+                background-color: #FFEBCD;
+            }
+            .color3 {
+                background-color: #FFE4C4;
+            }
+            .row_summary > td {
+                font-weight: bold; background-color: #DCDCDC !important;
+            }
+            .current_date > td {
+                font-weight: bold;
+                color: red !important;
+            }
+            .current_date > td > a {
+                color: red !important;
+            }
+        </style>
+    {% endif %}
+
+
+
+{% endif %}
