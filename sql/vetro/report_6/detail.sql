@@ -1,10 +1,7 @@
 with params as (
     select
-        [[env.period.0]] as d_start,
-        [[env.period.1]] as d_end,
         [[env.city]]::integer as city,
         [[env.stoa_company]]::integer as stoa_company,
-        [[env.responsible]]::integer as responsible,
         [[env.inscompany]]::integer as inscompany
 
         -- 0 as city_auto_host,
@@ -30,7 +27,6 @@ step1 as (
         round(d.d_documents_send::date - d.repair_date_real::date) as "Срок сдачи документов",
         d.pay_date::date as "Дата оплаты",
         round(d.pay_date::date - d.d_documents_send::date) as "Срок оплаты",
-        round(d.pay_date::date - d.direction_get_date::date) as "Средний срок полного цикла",
         d.s_repair_all as "Итого по заказ-наряду",
         d.replace_glass_glass_type as "Вид стекла на замену",
         d.damages_action as "Вид работ",
@@ -43,9 +39,7 @@ step1 as (
         and d.pay_date is null
         and (params.city = 0 or d.city_auto_host_id = params.city)
         and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
-        and (params.responsible = 0 or d.responsible_id = params.responsible)
         and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
-        and d.{{env.period_date}} between params.d_start and params.d_end
 
         -- Регион
         {% if get.region == 'Москва' %}
@@ -66,16 +60,16 @@ select
     d.*
 from step1 d
 where 1 = 1
-    {% if get.m == 'lt_15' %}
-        and d."Рабочих дней" < 15
+    {% if get.m == 'lte_15' %}
+        and d."Рабочих дней" <= 15
 
-    {% elif get.m == 'gte_15' %}
-        and d."Рабочих дней" >= 15
+    {% elif get.m == 'gt_15' %}
+        and d."Рабочих дней" > 15
 
-    {% elif get.m == 'gte_30' %}
-        and d."Календарных дней" >= 30
+    {% elif get.m == 'gt_30' %}
+        and d."Календарных дней" > 30
 
-    {% elif get.m == 'gte_60' %}
-        and d."Календарных дней" >= 60
+    {% elif get.m == 'gt_60' %}
+        and d."Календарных дней" > 60
 
     {% endif %}

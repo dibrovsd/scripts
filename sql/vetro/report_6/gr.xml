@@ -8,14 +8,14 @@
         <field name='cnt' classes="number" lnk="?m=summary&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
         <field name='sum' classes="number" lnk="?m=summary&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
 
-        <field name='cnt_lt_15' classes="number" lnk="?m=lt_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
-        <field name='sum_lt_15' classes="number" lnk="?m=lt_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
-        <field name='cnt_gte_15' classes="number" lnk="?m=gte_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
-        <field name='sum_gte_15' classes="number" lnk="?m=gte_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
-        <field name='cnt_gte_30' classes="number" lnk="?m=gte_30&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
-        <field name='sum_gte_30' classes="number" lnk="?m=gte_30&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
-        <field name='cnt_gte_60' classes="number" lnk="?m=gte_60&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
-        <field name='sum_gte_60' classes="number" lnk="?m=gte_60&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='cnt_lte_15' classes="number" lnk="?m=lte_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_lte_15' classes="number" lnk="?m=lte_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='cnt_gt_15' classes="number" lnk="?m=gt_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_gt_15' classes="number" lnk="?m=gt_15&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='cnt_gt_30' classes="number" lnk="?m=gt_30&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_gt_30' classes="number" lnk="?m=gt_30&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='cnt_gt_60' classes="number" lnk="?m=gt_60&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
+        <field name='sum_gt_60' classes="number" lnk="?m=gt_60&amp;region=[[row.region]]&amp;inscompany=[[row.inscompany_id]]"/>
 
     </fields>
 </xml>

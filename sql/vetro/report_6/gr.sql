@@ -1,10 +1,7 @@
 with params as (
     select
-        [[env.period.0]] as d_start,
-        [[env.period.1]] as d_end,
         [[env.city]]::integer as city,
         [[env.stoa_company]]::integer as stoa_company,
-        [[env.responsible]]::integer as responsible,
         [[env.inscompany]]::integer as inscompany
 
         -- to_date('01.07.2015', 'dd.mm.yyyy') as d_start,
@@ -26,19 +23,13 @@ base as (
         (current_date - d.d_documents_send::date) as days,
         f_workdays(d.d_documents_send::date, current_date) as workdays,
         d.inscompany_id
-    from (
-        select d.*,
-            d.{{env.period_date}} as measure_date
-        from reports.v_document d
-        where d.d_documents_send is not null
-            and d.pay_date is null
-    ) d
+    from reports.v_document d
     cross join params
-    where (params.city = 0 or d.city_auto_host_id = params.city)
+    where d.d_documents_send is not null
+      and d.pay_date is null
+      and (params.city = 0 or d.city_auto_host_id = params.city)
       and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
-      and (params.responsible = 0 or d.responsible_id = params.responsible)
       and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
-      and d.measure_date between params.d_start and params.d_end
 ),
 
 -- Группируем по базовому уровню
@@ -49,17 +40,17 @@ base_gr as (
         count(1) as cnt,
         sum(t.sum) as sum,
         --
-        count(case when t.workdays < 15 then 1 end) as cnt_lt_15,
-        sum(case when t.workdays < 15 then t.sum end) as sum_lt_15,
+        count(case when t.workdays <= 15 then 1 end) as cnt_lte_15,
+        sum(case when t.workdays <= 15 then t.sum end) as sum_lte_15,
         --
-        count(case when t.workdays >= 15 then 1 end) as cnt_gte_15,
-        sum(case when t.workdays >= 15 then t.sum end) as sum_gte_15,
+        count(case when t.workdays > 15 then 1 end) as cnt_gt_15,
+        sum(case when t.workdays > 15 then t.sum end) as sum_gt_15,
         --
-        count(case when t.days >= 30 then 1 end) as cnt_gte_30,
-        sum(case when t.days >= 30 then t.sum end) as sum_gte_30,
+        count(case when t.days > 30 then 1 end) as cnt_gt_30,
+        sum(case when t.days > 30 then t.sum end) as sum_gt_30,
         --
-        count(case when t.days >= 60 then 1 end) as cnt_gte_60,
-        sum(case when t.days >= 60 then t.sum end) as sum_gte_60
+        count(case when t.days > 60 then 1 end) as cnt_gt_60,
+        sum(case when t.days > 60 then t.sum end) as sum_gt_60
     from base t
     group by t.region, t.inscompany_id
 ),
@@ -71,14 +62,14 @@ cumul1 as (
         t.inscompany_id,
         t.cnt,
         t.sum,
-        t.cnt_lt_15,
-        t.sum_lt_15,
-        t.cnt_gte_15,
-        t.sum_gte_15,
-        t.cnt_gte_30,
-        t.sum_gte_30,
-        t.cnt_gte_60,
-        t.sum_gte_60
+        t.cnt_lte_15,
+        t.sum_lte_15,
+        t.cnt_gt_15,
+        t.sum_gt_15,
+        t.cnt_gt_30,
+        t.sum_gt_30,
+        t.cnt_gt_60,
+        t.sum_gt_60
     from base_gr t
     union all
     select
@@ -86,14 +77,14 @@ cumul1 as (
         t.inscompany_id,
         sum(t.cnt) as cnt,
         sum(t.sum) as sum,
-        sum(t.cnt_lt_15) as cnt_lt_15,
-        sum(t.sum_lt_15) as sum_lt_15,
-        sum(t.cnt_gte_15) as cnt_gte_15,
-        sum(t.sum_gte_15) as sum_gte_15,
-        sum(t.cnt_gte_30) as cnt_gte_30,
-        sum(t.sum_gte_30) as sum_gte_30,
-        sum(t.cnt_gte_60) as cnt_gte_60,
-        sum(t.sum_gte_60) as sum_gte_60
+        sum(t.cnt_lte_15) as cnt_lte_15,
+        sum(t.sum_lte_15) as sum_lte_15,
+        sum(t.cnt_gt_15) as cnt_gt_15,
+        sum(t.sum_gt_15) as sum_gt_15,
+        sum(t.cnt_gt_30) as cnt_gt_30,
+        sum(t.sum_gt_30) as sum_gt_30,
+        sum(t.cnt_gt_60) as cnt_gt_60,
+        sum(t.sum_gt_60) as sum_gt_60
     from base_gr t
     group by t.inscompany_id
 ),
@@ -105,14 +96,14 @@ cumul2 as (
         t.inscompany_id,
         t.cnt,
         t.sum,
-        t.cnt_lt_15,
-        t.sum_lt_15,
-        t.cnt_gte_15,
-        t.sum_gte_15,
-        t.cnt_gte_30,
-        t.sum_gte_30,
-        t.cnt_gte_60,
-        t.sum_gte_60
+        t.cnt_lte_15,
+        t.sum_lte_15,
+        t.cnt_gt_15,
+        t.sum_gt_15,
+        t.cnt_gt_30,
+        t.sum_gt_30,
+        t.cnt_gt_60,
+        t.sum_gt_60
     from cumul1 t
     union all
     select
@@ -120,14 +111,14 @@ cumul2 as (
         -1 as inscompany_id,
         sum(t.cnt) as cnt,
         sum(t.sum) as sum,
-        sum(t.cnt_lt_15) as cnt_lt_15,
-        sum(t.sum_lt_15) as sum_lt_15,
-        sum(t.cnt_gte_15) as cnt_gte_15,
-        sum(t.sum_gte_15) as sum_gte_15,
-        sum(t.cnt_gte_30) as cnt_gte_30,
-        sum(t.sum_gte_30) as sum_gte_30,
-        sum(t.cnt_gte_60) as cnt_gte_60,
-        sum(t.sum_gte_60) as sum_gte_60
+        sum(t.cnt_lte_15) as cnt_lte_15,
+        sum(t.sum_lte_15) as sum_lte_15,
+        sum(t.cnt_gt_15) as cnt_gt_15,
+        sum(t.sum_gt_15) as sum_gt_15,
+        sum(t.cnt_gt_30) as cnt_gt_30,
+        sum(t.sum_gt_30) as sum_gt_30,
+        sum(t.cnt_gt_60) as cnt_gt_60,
+        sum(t.sum_gt_60) as sum_gt_60
     from cumul1 t
     group by t.region
 ),
@@ -239,7 +230,7 @@ structure as (
 
     union all
 
-    select 'Итого по СОГАЗ' as title, 16 as n_order,
+    select 'Итого' as title, 16 as n_order,
         '' as row_style,
         'Итого' as region,
         -1 as inscompany_id
@@ -249,14 +240,14 @@ select
     s.title,
     d.cnt,
     d.sum,
-    d.cnt_lt_15,
-    d.sum_lt_15,
-    d.cnt_gte_15,
-    d.sum_gte_15,
-    d.cnt_gte_30,
-    d.sum_gte_30,
-    d.cnt_gte_60,
-    d.sum_gte_60,
+    d.cnt_lte_15,
+    d.sum_lte_15,
+    d.cnt_gt_15,
+    d.sum_gt_15,
+    d.cnt_gt_30,
+    d.sum_gt_30,
+    d.cnt_gt_60,
+    d.sum_gt_60,
     --
     s.row_style,
     s.region,

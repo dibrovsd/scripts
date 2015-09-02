@@ -4,6 +4,7 @@ with params as (
         [[env.period.1]] as d_to,
         [[env.city_auto_host]]::integer as city_auto_host,
         [[env.direction_stoa]]::integer as direction_stoa,
+        [[env.inscompany]]::integer as inscompany,
         -- GET переменные
         to_date('{{get.d_start}}', 'dd.mm.yyyy') as get_d_start,
         to_date('{{get.d_end}}', 'dd.mm.yyyy') + interval '1 day - 1 second' as get_d_end,
@@ -45,6 +46,7 @@ from reports.v_document d
 cross join params
 where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
     and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
+    and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
 
     and d.{{env.period_date}} between params.d_from and params.d_to
     and d.{{env.period_date}} between params.get_d_start and params.get_d_end

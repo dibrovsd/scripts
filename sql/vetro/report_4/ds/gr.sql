@@ -3,7 +3,8 @@ with params as (
         [[env.period.0]] as d_from,
         [[env.period.1]] as d_to,
         [[env.city_auto_host]]::integer as city_auto_host,
-        [[env.direction_stoa]]::integer as direction_stoa
+        [[env.direction_stoa]]::integer as direction_stoa,
+        [[env.inscompany]]::integer as inscompany
 
         -- 0 as city_auto_host,
         -- 0 as direction_stoa,
@@ -28,6 +29,7 @@ base as (
     cross join params
     where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
       and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
+      and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
 
 ),
 
