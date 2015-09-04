@@ -2,7 +2,7 @@ with params as (
     select
         [[env.city_auto_host]]::integer as city_auto_host,
         [[env.direction_stoa]]::integer as direction_stoa,
-        [[env.responsible]]::integer as responsible,
+        [[env.responsible]]::integer as curator,
 
         to_date([[get.d_from]], 'dd.mm.yyyy') as d_from,
         to_date([[get.d_to]], 'dd.mm.yyyy') + interval '1 day - 1 second' as d_to,
@@ -10,7 +10,7 @@ with params as (
 
         -- 0 as city_auto_host,
         -- 0 as direction_stoa,
-        -- 0 as responsible,
+        -- 0 as curator,
         -- to_date('01.01.2015', 'dd.mm.yyyy') as d_from,
         -- to_date('01.08.2015', 'dd.mm.yyyy') as d_to,
         -- 0 as inscompany
@@ -41,8 +41,18 @@ cross join params
 where d.inscompany_id is not null
     and (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
     and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
-    and (params.responsible = 0 or d.curator_id = params.responsible)
+    and (params.curator = 0 or d.curator_id = params.curator)
     and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
+
+    {% if 'customer_service' in user_params.roles %}
+       and d.curator_id = {{user.id}}
+
+    {% elif 'stoa' in user_params.roles %}
+       and d.stoa_id in ({{user.stations_ids|join:","}})
+       -- "Ожидание решения СК о смене СТОА" и "Ожидание оплаты"
+       and d.state_id not in (15, 11)
+
+    {% endif %}
 
     {% if get.col == 'in' %}
         and d.d_create between params.d_from and params.d_to

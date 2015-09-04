@@ -4,7 +4,9 @@ with params as (
         [[env.period.1]] as d_end,
         [[env.city_auto_host]]::integer as city_auto_host,
         [[env.direction_stoa]]::integer as direction_stoa,
-        [[env.responsible]]::integer as responsible
+        [[env.stoa_company]]::integer as stoa_company,
+        [[env.curator]]::integer as curator,
+        [[env.inscompany]]::integer as inscompany
 
         -- 0 as city_auto_host,
         -- 0 as direction_stoa,
@@ -40,7 +42,9 @@ base as (
     cross join params
     where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
       and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
-      and (params.responsible = 0 or d.responsible_id = params.responsible)
+      and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
+      and (params.curator = 0 or d.curator_id = params.curator)
+      and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
       and d.measure_date between params.d_start and params.d_end
 ),
 

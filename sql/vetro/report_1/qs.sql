@@ -1,12 +1,12 @@
 with params as (
     select
-        -- [[env.city_auto_host]]::integer as city_auto_host,
-        -- [[env.direction_stoa]]::integer as direction_stoa,
-        -- [[env.responsible]]::integer as responsible
+         [[env.city_auto_host]]::integer as city_auto_host,
+         [[env.direction_stoa]]::integer as direction_stoa,
+         [[env.responsible]]::integer as curator
 
-        0 as city_auto_host,
-        0 as direction_stoa,
-        0 as responsible
+        -- 0 as city_auto_host,
+        -- 0 as direction_stoa,
+        -- 0 as responsible
 ),
 
 documents as (
@@ -23,7 +23,17 @@ documents as (
     cross join params
     where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
       and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
-      and (params.responsible = 0 or d.curator_id = params.responsible)
+      and (params.curator = 0 or d.curator_id = params.curator)
+
+        {% if 'customer_service' in user_params.roles %}
+           and d.curator_id = {{user.id}}
+
+        {% elif 'stoa' in user_params.roles %}
+           and d.stoa_id in ({{user.stations_ids|join:","}})
+           -- "Ожидание решения СК о смене СТОА" и "Ожидание оплаты"
+           and d.state_id not in (15, 11)
+
+        {% endif %}
 ),
 
 document_event as (
@@ -205,6 +215,7 @@ select
     -- Выход
     sum(case when t.measure = 'out_repair' then cnt end) as "Выход (ремонт)",
     sum(case when t.measure = 'out_wait_paymenet' then cnt end) as "Выход (ожидание оплаты)",
+
 
     sum(case when t.measure = 'out_archive_payment' then cnt end) as "Выход (архив выплата)",
     sum(case when t.measure = 'out_archive_reject' then cnt end) as "Выход (архив отказ)",
