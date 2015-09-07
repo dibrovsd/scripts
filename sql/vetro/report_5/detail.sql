@@ -8,7 +8,6 @@ with params as (
         [[env.curator]]::integer as curator,
         [[env.inscompany]]::integer as inscompany
 
-
         -- 0 as city_auto_host,
         -- 0 as direction_stoa,
         -- 0 as responsible,
