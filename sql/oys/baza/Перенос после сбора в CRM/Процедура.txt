@@ -1,0 +1,21 @@
+1) Собрать таблицу для выгрузки tmp_to_load
+
+2) Забрать таблицу и залить ее в базу crm
+
+pg_dump \
+--format=c \
+--host=localhost \
+--username=wsp \
+--table=tmp_to_load \
+wsp > tmp_to_load.bk
+
+pg_restore \
+--dbname=crm \
+--format=c \
+--host=localhost \
+--username=django \
+< tmp_to_load.bk
+
+
+hostmaster
+123dfsfsdgsfg
