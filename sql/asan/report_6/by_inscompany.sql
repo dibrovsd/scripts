@@ -17,12 +17,59 @@ with params as (
 ),
 
 collect as (
-    select
-        t.inscompany_id,
-        t.s_premium,
-        t.s_comission,
-        t.seller_territory_id
-    from reports.base_sales t
+
+    -- ОСАГО
+    select t.inscompany_id, t.s_premium as s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_osago t
+    cross join params
+    where t.d_issue between params.d_start and params.d_end
+
+    -- Недвижимость
+    union all
+    select t.inscompany_id, t.s_premium as s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_realty t
+    cross join params
+    where t.d_issue between params.d_start and params.d_end
+
+    -- ВЗР
+    union all
+    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_travel t
+    cross join params
+    where t.d_issue between params.d_start and params.d_end
+
+    -- Уверенный водитель
+    union all
+    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_confident_driver t
+    cross join params
+    where t.d_issue between params.d_start and params.d_end
+
+    -- Просто КАСКО
+    union all
+    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_simple_kasko t
+    cross join params
+    where t.d_issue between params.d_start and params.d_end
+
+    -- Пятерочка (Атешгях)
+    union all
+    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_raider_five t
+    cross join params
+    where t.d_issue between params.d_start and params.d_end
+
+    -- Расширение ОСАГО (Атешгях)
+    union all
+    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_raider_osago_plus t
+    cross join params
+    where t.d_issue between params.d_start and params.d_end
+
+    -- Супер КАСКО (Атешгях)
+    union all
+    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
+    from reports.base_raider_super_kasko t
     cross join params
     where t.d_issue between params.d_start and params.d_end
 ),
