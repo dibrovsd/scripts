@@ -29,6 +29,7 @@ select d.id,
        auto_mark.title as auto_mark,
        auto_model.title as auto_model,
        d.auto_number,
+       d.direction_deductible as deductible,
        --
        st.title as state,
        u.last_name ||' '|| u.first_name as responsible,

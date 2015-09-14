@@ -61,6 +61,7 @@ tasks as (
         d.state as "Этап",
         d.city as "Город",
         d.stoa as "СТОА",
+        d.deductible as "Франшиза",
         d.responsible as "Ответственный",
         d.direction_get_date::date as "Дата получения направления",
         d.inspection_date::date as "Дата осмотра (план)",
