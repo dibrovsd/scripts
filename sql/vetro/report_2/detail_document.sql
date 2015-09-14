@@ -28,6 +28,9 @@ documents_base as (
         --
         d.direction_num as "Направление",
         d.inscompany as "Страховая компания",
+        d.auto_mark as "Марка ТС",
+        d.auto_model as "Модель ТС",
+        d.auto_number as "Номер ТС",
         d.state as "Этап",
         d.city as "Город",
         d.stoa as "СТОА",

@@ -26,8 +26,13 @@ select d.id,
        d.pay_date,
 	   d.pay_sum,
        inscompany.title as inscompany,
+       auto_mark.title as auto_mark,
+       auto_model.title as auto_model,
+       d.auto_number,
+       --
        st.title as state,
        u.last_name ||' '|| u.first_name as responsible,
+       --
        d.city_auto_host_id,
        d.direction_stoa_id as stoa_id,
        stoa.company_id as stoa_company_id,
@@ -46,6 +51,8 @@ left join base_user u on u.id = de.user_responsible_id
 left join docflow_p1fsglassstock replace_glass on replace_glass.document_id = d.id
                                                and replace_glass.replacement = true
 left join base_inscompany inscompany on inscompany.id = d.inscompany_id
+left join base_automark auto_mark on auto_mark.id = d.auto_mark_id
+left join base_automodel auto_model on auto_model.id = d.auto_model_id
 -- Повреждения
 left join (
     select damages.document_id,
