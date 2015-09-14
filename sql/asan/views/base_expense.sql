@@ -3,7 +3,8 @@ create or replace view reports.base_expense as
 
 with base as (
     select
-        t.segment,
+        t.period,
+		t.segment,
         t.expense_type,
         t.value,
         t.period as d_from,
@@ -13,6 +14,7 @@ with base as (
 
 by_day as (
     select
+		t.period,
         t.segment,
         t.expense_type,
         t.value as value,
@@ -26,7 +28,7 @@ work_days as (
         exp.segment,
         exp.day,
         exp.expense_type,
-        exp.value / count(1) over(partition by exp.segment, exp.expense_type) as value
+        exp.value / count(1) over(partition by period, exp.segment, exp.expense_type) as value
     from by_day exp
     where exp.segment = 'asan'
        or exp.segment = 'call_center'
