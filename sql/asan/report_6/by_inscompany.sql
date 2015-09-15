@@ -11,74 +11,28 @@ with params as (
 
         {% endif %}
 
-        -- to_date('01.01.2015', 'dd.mm.yyyy') as d_start,
-        -- current_date as d_end
+        -- to_date('01.01.2015', 'dd.mm.yyyy')::date as d_start,
+        -- current_date::date as d_end
 
 ),
 
 collect as (
-
-    -- ОСАГО
-    select t.inscompany_id, t.s_premium as s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_osago t
+    select s.inscompany_id,
+        s.s_premium,
+        s.s_comission,
+        s.s_comission_no_discount,
+        s.seller_territory_id
+    from reports.base_sales s
     cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Недвижимость
-    union all
-    select t.inscompany_id, t.s_premium as s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_realty t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- ВЗР
-    union all
-    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_travel t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Уверенный водитель
-    union all
-    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_confident_driver t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Просто КАСКО
-    union all
-    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_simple_kasko t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Пятерочка (Атешгях)
-    union all
-    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_raider_five t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Расширение ОСАГО (Атешгях)
-    union all
-    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_raider_osago_plus t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Супер КАСКО (Атешгях)
-    union all
-    select t.inscompany_id, t.s_premium, t.s_comission, t.seller_territory_id
-    from reports.base_raider_super_kasko t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
+    where s.d_issue between params.d_start and params.d_end
 ),
 
 gr as (
     select
         inscompany_id,
         sum(s_premium) as s_premium,
-        sum(s_comission) as s_comission
+        sum(s_comission) as s_comission,
+        sum(s_comission_no_discount) as s_comission_no_discount
     from collect
     {% if env.seller_territory == 'call_centre' %}
         where seller_territory_id = 9
@@ -92,9 +46,11 @@ select
     i.title as inscompany,
     c.color,
     s_premium,
-    s_comission
+    s_comission,
+    s_comission_no_discount
 from gr
 join docflow_inscompany i on i.id = gr.inscompany_id
 left join (
     {{datasets.inscompany_color.sql}}
+    -- select null::int as id, null as color
 ) c on c.id = gr.inscompany_id
