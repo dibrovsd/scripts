@@ -11,6 +11,7 @@ with t as (
         t.s7_id,
         case
             when t.inscompany_id in (5,8,12) then 0.3
+            when t.inscompany_id = 11 then 0.4
             else 0.25
         end as comission_percent,
         t.n_contract,

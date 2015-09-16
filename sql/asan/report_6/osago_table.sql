@@ -21,11 +21,12 @@ gr as (
     -- ОСАГО
     select
         t.inscompany_id,
-        sum(t.s_premium_base) as s_premium,
+        sum(t.s_premium) as s_premium,
         count(1) as cnt
-    from reports.base_osago t
+    from reports.base_sales t
     cross join params
-    where t.d_issue between params.d_start and params.d_end
+    where t.product = 'ОСАГО'
+        and t.d_issue between params.d_start and params.d_end
         {% if env.seller_territory == 'call_centre' %}
             and seller_territory_id = 9
         {% elif env.seller_territory == 'asan' %}

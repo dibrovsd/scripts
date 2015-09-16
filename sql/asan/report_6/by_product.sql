@@ -17,62 +17,13 @@ with params as (
 ),
 
 collect as (
-
-    -- ОСАГО
-    select 'ОСАГО' as product, t.s_premium, t.seller_territory_id
-    from reports.base_osago t
+    select
+        s.s_premium,
+        s.seller_territory_id,
+        s.product
+    from reports.base_sales s
     cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Недвижимость
-    union all
-    select 'Недвижимость' as product, t.s_premium, t.seller_territory_id
-    from reports.base_realty t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- ВЗР
-    union all
-    select 'ВЗР' as product, t.s_premium, t.seller_territory_id
-    from reports.base_travel t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Уверенный водитель
-    union all
-    select 'Уверенный водитель' as product, t.s_premium, t.seller_territory_id
-    from reports.base_confident_driver t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Просто КАСКО
-    union all
-    select 'Просто КАСКО' as product, t.s_premium, t.seller_territory_id
-    from reports.base_simple_kasko t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Пятерочка (Атешгях)
-    union all
-    select 'Пятерочка' as product, t.s_premium, t.seller_territory_id
-    from reports.base_raider_five t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Расширение ОСАГО (Атешгях)
-    union all
-    select 'ОСАГО+' as product, t.s_premium, t.seller_territory_id
-    from reports.base_raider_osago_plus t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
-    -- Супер КАСКО (Атешгях)
-    union all
-    select 'Супер КАСКО' as product, t.s_premium, t.seller_territory_id
-    from reports.base_raider_super_kasko t
-    cross join params
-    where t.d_issue between params.d_start and params.d_end
-
+    where s.d_issue between params.d_start and params.d_end
 )
 
 select

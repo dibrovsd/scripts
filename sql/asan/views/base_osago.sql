@@ -24,7 +24,7 @@ with t as (
         coalesce(raiders.cost, 0) as s_premium_rider,
         coalesce(t.discount_percent::numeric / 100, 0) as discount_ratio,
         case
-            when t.inscompany_id in (5,8,12) then 0.3
+            when t.inscompany_id in (5,8,11,12) then 0.3
             else 0.25
         end as comission_percent,
         -- Доставка
