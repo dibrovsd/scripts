@@ -84,8 +84,7 @@ tasks as (
     cross join params
     where (params.task_type is null or params.task_type = tsk.tasktype_id)
       and (params.task_state = 0 or params.task_state = tsk.state)
-
-
+      and tsk.state != 3
 )
 
 select tasks.*
