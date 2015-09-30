@@ -47,4 +47,8 @@ where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
   and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
   and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
   and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
-  and d.d_create between params.d_from and params.d_to 
+  and d.d_create between params.d_from and params.d_to
+
+  {% if not get.full %}
+  limit 100
+  {% endif %}

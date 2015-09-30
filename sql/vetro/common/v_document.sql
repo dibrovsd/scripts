@@ -7,6 +7,7 @@ create or replace view reports.v_document as
            d.direction_num,
            city.title as city,
            stoacompany.title ||' '|| stoa.title as stoa,
+           stoacompany.title as stoa_company,
            d.direction_get_date,
            d.inspection_date,
            d.inspection_date_real,
@@ -42,6 +43,7 @@ create or replace view reports.v_document as
            u.last_name ||' '|| u.first_name as responsible,
            --
            d.city_auto_host_id,
+           d.city_auto_host_id as city_id,
            d.direction_stoa_id as stoa_id,
            stoa.company_id as stoa_company_id,
            de.user_responsible_id as responsible_id,
