@@ -44,8 +44,7 @@ step1 as (
         and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
         and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
 
-        and d.{{env.period_date}} between params.d_start and params.d_end
-        -- and d.repair_date_real between params.d_start and params.d_end
+        and d.repair_date_real between params.d_start and params.d_end
 
         -- Регион
         {% if get.region == 'Москва' %}
@@ -81,13 +80,13 @@ step2 as (
         {% endif %}
 
     {% elif get.m == 'documents' %}
-        and d."До передачи документов в СК" is not null
+        and d."Срок сдачи документов" is not null
 
     {% elif get.m == 'payment' %}
-        and d."До оплаты" is not null
+        and d."Срок оплаты" is not null
 
     {% elif get.m == 'summary' %}
-        and d."Полный цикл" is not null
+        and d."Средний срок полного цикла" is not null
 
     {% endif %}
 )

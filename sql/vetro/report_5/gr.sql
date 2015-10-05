@@ -36,7 +36,7 @@ base as (
         d.measure_date
     from (
         select d.*,
-            d.{{env.period_date}} as measure_date
+            d.repair_date_real as measure_date
         from reports.v_document d
     ) d
     cross join params
