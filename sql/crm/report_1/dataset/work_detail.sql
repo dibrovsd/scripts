@@ -19,8 +19,8 @@ select
     u.last_name ||' '|| u.first_name as "Ответственный",
     lib.title as "Текущий статус",
     tsk_log.d_create as "Дата текущего статуса",
-    contr.brand as "Марка",
-    contr.model as "Модель",
+    a.brand as "Марка",
+    a.model as "Модель",
     contr.insurance_company as "Страховая",
     contr.contract_number as "Номер договора",
     contr.d_end as "Дата окончания договора"
@@ -30,7 +30,8 @@ inner join base_user u on u.id = tsk.responsible_id
 join reports.libs lib
 		on lib.lib_name = 'calltask_status'
 		and lib.id = tsk.status
-inner join crm_inscontractauto contr on contr.id = tsk.contract_id
+left join crm_inscontractauto contr on contr.id = tsk.contract_id
+left join crm_auto a on a.id = contr.auto_id
 cross join params
 where tsk_log.d_create between params.d_from and params.d_to
     and (params.status is null or tsk.status = params.status)
