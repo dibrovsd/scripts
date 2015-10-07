@@ -41,6 +41,7 @@ create or replace view reports.v_document as
            --
            st.title as state,
            u.last_name ||' '|| u.first_name as responsible,
+           curator.last_name ||' '|| curator.first_name as curator,
            --
            d.city_auto_host_id,
            d.city_auto_host_id as city_id,
@@ -82,4 +83,5 @@ create or replace view reports.v_document as
         where e1.state_to_id = 2 -- Приглашение на осмотр
     ) event_state2 on event_state2.document_id = d.id
                    and event_state2.rn = 1
+    left join base_user curator on curator.id = event_state2.user_responsible_id
     where d.deleted = false

@@ -2,35 +2,46 @@
 * Данные для сверки с CRM
 */
 
+drop table tmp_crm_copy;
+
 create table tmp_crm_copy as
 
 select
+	t.id,
+	t.ins_legal_itin,
 	t.ins_person_pin,
 	t.n_contract,
 	'auto' as product
 from docflow_document2 t
 where t.canceled = false
-and t.n_contract is not null
+	and t.n_contract is not null
+	and t.n_contract != ''
 
 union ALL
 
 select
+	t.id,
+	t.ins_legal_itin,
 	t.ins_person_pin,
 	t.n_contract,
 	'realty' as product
 from docflow_document3 t
 where t.canceled = false
-and t.n_contract is not null
+	and t.n_contract is not null
+	and t.n_contract != ''
 
 union ALL
 
 select
+	t.id,
+	null as ins_legal_itin,
 	t.ins_person_pin,
 	t.n_contract,
 	'travel' as product
 from docflow_document4 t
 where t.canceled = false
-and t.n_contract is not null
+	and t.n_contract is not null
+	and t.n_contract != '';
 
 /*
 
