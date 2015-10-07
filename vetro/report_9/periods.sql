@@ -33,6 +33,6 @@ select * from (
 union all
 
 select
-    '2015' as title,
+    'ИтогоВход' as title,
     '2015-01-01' as d_start,
     '2016-01-01' as d_end

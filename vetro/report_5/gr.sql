@@ -48,7 +48,15 @@ base as (
       and d.measure_date between params.d_start and params.d_end
 ),
 
--- Группируем
+-- Считаем по дате документов
+base_direction_get as (
+
+),
+
+-- Считаем по дате оплаты
+base_payment as (),
+
+-- Группируем и объединяем
 base_gr as (
     select
         t.action,

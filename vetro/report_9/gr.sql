@@ -29,6 +29,14 @@ base as (
         and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
         and (params.curator = 0 or d.curator_id = params.curator)
         and d.{{env.group_by}}_id is not null
+
+        {% if 'customer_service' in user_params.roles %}
+           and d.curator_id = {{user.id}}
+
+        {% elif 'stoa' in user_params.roles %}
+           and d.stoa_id in ({{user.stations_ids|join:","}})
+
+        {% endif %}
 ),
 
 base_event as (
@@ -40,12 +48,40 @@ base_event as (
     where e.d_create between params.d_start and params.d_end
 ),
 
+-- На этот скелет будем нанизывать группировки по разным
 base_skeleton as (
-    select distinct
-        group_field,
-        group_field_id
-    from base
-    order by group_field
+    {% if env.group_by == 'city' %}
+        select id, title from base_city
+
+    {% elif env.group_by == 'stoa' %}
+        select
+            s.id,
+            c.title ||' > '|| sc.title || ' > ' || s.title as title
+        from base_stoa s
+        join base_stoacompany sc on sc.id = s.company_id
+        join base_city c on c.id = s.city_id
+
+    {% elif env.group_by == 'stoa_company' %}
+        select
+            comp.id,
+            comp.title || ' ('|| stoa.city_title ||')' as title
+        from base_stoacompany comp
+        left join (
+            select
+                stoa.company_id,
+                max(city.title) as city_title
+            from base_stoa stoa
+            inner join base_city city on city.id = stoa.city_id
+            group by stoa.company_id
+        ) stoa on stoa.company_id = comp.id
+        order by title
+
+    {% endif %}
+
+    -- select
+    --     group_field,
+    --     group_field_id
+    -- from base
 ),
 
 incoming as (
@@ -105,7 +141,8 @@ out_archive as (
 ),
 
 data as (
-    select s.group_field,
+    select s.id as group_id,
+        s.title as group_title,
         incoming.*,
         out_repair.cnt as out_repair_cnt,
         out_wp.cnt as out_wp_cnt,
@@ -113,16 +150,16 @@ data as (
         out_pay.pay_sum as out_pay_sum,
         out_archive.cnt as out_archive_cnt
     from base_skeleton s
-    left join incoming on incoming.group_field_id = s.group_field_id
-    left join out_repair on out_repair.group_field_id = s.group_field_id
-    left join out_wait_paymenet out_wp on out_wp.group_field_id = s.group_field_id
-    left join out_pay on out_pay.group_field_id = s.group_field_id
-    left join out_archive on out_archive.group_field_id = s.group_field_id
+    left join incoming on incoming.group_field_id = s.id
+    left join out_repair on out_repair.group_field_id = s.id
+    left join out_wait_paymenet out_wp on out_wp.group_field_id = s.id
+    left join out_pay on out_pay.group_field_id = s.id
+    left join out_archive on out_archive.group_field_id = s.id
 )
 
 select
-    t.group_field,
-    t.group_field_id,
+    t.group_id,
+    t.group_title,
     {% for row in datasets.periods.data %}
     t."{{row.title}}",
     {% endfor %}
@@ -130,14 +167,15 @@ select
     t.out_wp_cnt,
     t.out_pay_cnt,
     t.out_pay_sum,
-    t.out_archive_cnt
+    t.out_archive_cnt,
+    1 as group_order
 from data t
 
 union all
 
 select
-    'Итого' as group_field,
-    null as group_field_id,
+    0 as group_id,
+    'Итого' as group_title,
     {% for row in datasets.periods.data %}
     sum(t."{{row.title}}") as "{{row.title}}",
     {% endfor %}
@@ -145,5 +183,8 @@ select
     sum(t.out_wp_cnt) as out_wp_cnt,
     sum(t.out_pay_cnt) as out_pay_cnt,
     sum(t.out_pay_sum) as out_pay_sum,
-    sum(t.out_archive_cnt) as out_archive_cnt
+    sum(t.out_archive_cnt) as out_archive_cnt,
+    2 as group_order
 from data t
+
+order by group_order, "ИтогоВход" desc nulls last

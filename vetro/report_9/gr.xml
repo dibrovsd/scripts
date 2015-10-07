@@ -1,0 +1,27 @@
+<xml>
+    <fields>
+        <field name="group_id" display="0"/>
+        <field name="group_order" display="0"/>
+
+        {% for row in datasets.periods.data %}
+        <field name="{{row.title}}" classes="number" lnk="?dt=incoming&amp;d_start={{row.d_start}}&amp;d_end={{row.d_end}}&amp;group_id=[[row.group_id]]"/>
+        {% endfor %}
+
+        <field name="out_repair_cnt" classes="number" lnk="?dt=out_repair&amp;group_id=[[row.group_id]]"/>
+        <field name="out_wp_cnt" classes="number" lnk="?dt=out_wp&amp;group_id=[[row.group_id]]"/>
+
+        <field name="out_archive_cnt" classes="number" lnk="?dt=out_archive&amp;group_id=[[row.group_id]]" />
+
+        {% if 'stoa' in user_params.roles %}
+            <field name="out_pay_cnt" classes="number" display="0"/>
+            <field name="out_pay_sum" classes="number" display="0"/>
+
+        {% else %}
+            <field name="out_pay_cnt" classes="number" lnk="?dt=out_pay&amp;group_id=[[row.group_id]]" />
+            <field name="out_pay_sum" classes="number" lnk="?dt=out_pay&amp;group_id=[[row.group_id]]" />
+
+        {% endif %}
+
+
+    </fields>
+</xml>
