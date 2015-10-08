@@ -1,0 +1,12 @@
+<xml>
+    <fields>
+        <field name="cnt_property" classes="number" lnk="?seller=[[row.seller_id]]&amp;territory=[[row.territory_id]]&amp;project=3&amp;only_auto=0"/>
+        <field name="property_ratio" classes="number" lnk="?seller=[[row.seller_id]]&amp;territory=[[row.territory_id]]&amp;project=3&amp;only_auto=1"/>
+
+        <field name="cnt_travel" classes="number" lnk="?seller=[[row.seller_id]]&amp;territory=[[row.territory_id]]&amp;project=4&amp;only_auto=0"/>
+        <field name="travel_ratio" classes="number" lnk="?seller=[[row.seller_id]]&amp;territory=[[row.territory_id]]&amp;project=4&amp;only_auto=1"/>
+
+        <field name="seller_id" display="0"/>
+        <field name="territory_id" display="0"/>
+    </fields>
+</xml>
