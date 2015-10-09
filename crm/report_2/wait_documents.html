@@ -1,0 +1,24 @@
+<div id="wait_documents" style="height:200px; width:100%;"></div>
+<script>
+
+$(document).ready(function() {
+    AmCharts.makeChart("wait_documents", {
+      "type": "funnel",
+      "theme": "light",
+      "dataProvider": {{datasets.wait_documents.json}},
+      "balloon": {
+        "fixedPosition": true
+      },
+      "valueField": "value",
+      "titleField": "title",
+      "marginRight": 240,
+      "marginLeft": 50,
+      "startX": -500,
+      "outlineAlpha": 1,
+      "outlineColor": "#FFFFFF",
+      "outlineThickness": 2,
+      "labelPosition": "right",
+      "balloonText": "[[title]]: [[value]]",
+    })
+})
+</script>

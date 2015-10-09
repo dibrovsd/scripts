@@ -1,0 +1,24 @@
+<div id="graph_cross_sale" style="height:200px; width:100%;"></div>
+<script>
+
+$(document).ready(function() {
+    AmCharts.makeChart("graph_cross_sale", {
+      "type": "funnel",
+      "theme": "light",
+      "dataProvider": {{datasets.graph_cross_sale.json}},
+      "balloon": {
+        "fixedPosition": true
+      },
+      "valueField": "value",
+      "titleField": "title",
+      "marginRight": 240,
+      "marginLeft": 50,
+      "startX": -500,
+      "outlineAlpha": 1,
+      "outlineColor": "#FFFFFF",
+      "outlineThickness": 2,
+      "labelPosition": "right",
+      "balloonText": "[[title]]: [[value]]",
+    })
+})
+</script>

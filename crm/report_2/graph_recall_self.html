@@ -1,0 +1,15 @@
+<div id="graph_recall_self" style="height:200px; width:100%;"></div>
+<script>
+
+$(document).ready(function() {
+    AmCharts.makeChart("graph_recall_self", {
+      "type": "funnel",
+      "theme": "light",
+      "dataProvider": {{datasets.graph_recall_self.json}},
+      "valueField": "value",
+      "titleField": "title",
+      "labelsEnabled": false,
+      "balloonText": "[[title]]: [[value]]",
+    })
+})
+</script>
