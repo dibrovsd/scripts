@@ -1,9 +1,3 @@
-select
-    'Создано задач' as title,
-    count(1) as value
-from ({{datasets.base.sql}}) t
-
-union all
 
 select
     'Сам свяжется' as title,

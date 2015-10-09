@@ -1,11 +1,4 @@
 select
-    'В отчетном периоде' as title,
-    count(1) as value
-from ({{datasets.base.sql}}) t
-
-union all
-
-select
     'Ожидание документов' as title,
     count(1) as value
 from ({{datasets.base.sql}}) t
@@ -14,7 +7,6 @@ where exists (
     where log.task_id = t.id
     and log.status = 12 -- Ожидание документов
 )
-
 
 union all
 
