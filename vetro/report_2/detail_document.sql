@@ -81,3 +81,4 @@ cross join params
 where 1 = 1
     and (params.d_from is null or d."Дней" >= params.d_from)
     and (params.d_to is null or d."Дней" <= params.d_to)
+order by "Отправлен" desc
