@@ -60,6 +60,10 @@ events_in as (
         e.user_responsible_id as user_id
     from events e
     where e.rn_to = 1
+    and exists (
+        select null from ({{datasets.users.sql}}) u1
+        where u1.id = e.user_responsible_id
+    )
 ),
 
 -- Последнее событие по документу, отправленное оператором
@@ -70,6 +74,10 @@ events_out as (
         e.d_create
     from events e
     where e.rn_from = 1
+    and exists (
+        select null from ({{datasets.users.sql}}) u1
+        where u1.id = e.user_creator_id
+    )
 ),
 
 -- Вход на этап
@@ -111,6 +119,10 @@ current_gr as (
         d.responsible_id as user_id,
         count(1) as cnt
     from documents d
+    where exists (
+        select null from ({{datasets.users.sql}}) u1
+        where u1.id = d.responsible_id
+    )
     group by d.state_id, d.responsible_id
 ),
 
