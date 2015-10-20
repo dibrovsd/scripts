@@ -1,19 +1,4 @@
-with params as (
-    select
-        [[env.city]]::integer as city,
-        [[env.stoa_company]]::integer as stoa_company,
-        [[env.inscompany]]::integer as inscompany,
-        [[env.period.0]] as d_start,
-        [[env.period.1]] as d_end
-
-        -- 0 as city,
-        -- 0 as stoa_company,
-        -- 0 as inscompany,
-        -- 0 as role,
-        -- 0 as curator,
-        -- current_date - 60 as d_start,
-        -- current_date as d_end
-),
+{{datasets.src.sql}},
 
 complex_state as (
     select -1 as state_id, array[-3, 18, 16, 15] as states union all
@@ -23,20 +8,6 @@ complex_state as (
     select -6 as state_id, array[14, 3, 21, 20, 8, 9] as states union all
     select -7 as state_id, array[10, 13] as states union all
     select -8 as state_id, array[10, 13] as states
-),
-
--- Документы
-documents as (
-    select d.id,
-        d.responsible_id,
-        d.curator_id,
-        d.state_id
-    from reports.v_document d
-    cross join params
-    where 1 = 1
-      and (params.city = 0 or d.city_auto_host_id = params.city)
-      and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
-      and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
 ),
 
 -- Переходы с этапа на этап

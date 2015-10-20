@@ -1,4 +1,4 @@
-{{datasets.src_operations.sql}},
+{{datasets.src_events.sql}},
 
 -- Операции по дням
 gr_day as (

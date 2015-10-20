@@ -1,4 +1,4 @@
-{{datasets.src_operations.sql}},
+{{datasets.src_events.sql}},
 
 op as (
     select op.* from operations op
