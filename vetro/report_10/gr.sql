@@ -19,9 +19,21 @@ gr as (
         op.state_id,
         op.user_id,
         sum(cnt) as cnt,
-        count(1) as days
+        1 as workers
     from gr_day op
     group by op.m, op.state_id, op.user_id
+
+    union all
+
+    select
+        op.m,
+        complex_state.state_id,
+        op.user_id,
+        sum(cnt) as cnt,
+        1 as workers
+    from gr_day op
+    inner join complex_state on op.state_id = any (complex_state.states)
+    group by op.m, complex_state.state_id, op.user_id, d_create
 ),
 
 -- Итоги по юзеру
@@ -31,7 +43,7 @@ gr_cumul1 as (
         gr.state_id,
         gr.user_id,
         gr.cnt,
-        gr.days
+        gr.workers
     from gr
 
     union all
@@ -41,7 +53,7 @@ gr_cumul1 as (
         gr.state_id,
         0 as user_id,
         sum(gr.cnt) as cnt,
-        sum(gr.days) as days
+        sum(gr.workers) as workers
     from gr
     group by gr.m, gr.state_id
 ),
@@ -53,28 +65,8 @@ gr_cumul2 as (
         gr.state_id,
         gr.user_id,
         gr.cnt,
-        gr.days
+        gr.workers
     from gr_cumul1 gr
-
-    union all
-
-    select
-        gr.m,
-        gr_st.state_id,
-        gr.user_id,
-        sum(gr.cnt) as cnt,
-        sum(gr.days) as days
-    from (
-        select -1 as state_id, array[-3, 18, 16, 15] as states union all
-        select -2 as state_id, array[2, 4, 24, 5, 19] as states union all
-        select -4 as state_id, array[22, 23] as states union all
-        select -5 as state_id, array[6, 25] as states union all
-        select -6 as state_id, array[14, 3, 21, 20, 8, 9] as states union all
-        select -7 as state_id, array[10, 13] as states union all
-        select -8 as state_id, array[10, 13] as states
-    ) gr_st
-    inner join gr_cumul1 gr on gr.state_id = any (gr_st.states)
-    group by gr.m, gr_st.state_id, gr.user_id
 
     union all
 
@@ -83,7 +75,7 @@ gr_cumul2 as (
         0 as state_id,
         gr.user_id,
         sum(gr.cnt) as cnt,
-        sum(gr.days) as days
+        sum(gr.workers) as workers
     from gr_cumul1 gr
     group by gr.m, gr.user_id
 
@@ -131,9 +123,11 @@ skelet as (
 
     select 'Итого' as title, 0 as id, 31 as n_order, 'background-color: #ccc; font-weight: bold;' as row_style
 )
-
--- select * from gr_cumul2
-
+--
+-- select sum(gr.cnt), sum(workers) from gr
+-- where m = 'out'
+-- and state_id = -6
+--
 select
     skelet.title,
     --
@@ -141,10 +135,19 @@ select
     sum(case when dt.m = 'out' and dt.user_id = 0 then dt.cnt end) as events_out,
     sum(case when dt.m = 'now' and dt.user_id = 0 then dt.cnt end) as current,
     f_division(
-        sum(case when dt.m = 'out' and dt.user_id = 0 then dt.cnt end),
-        sum(case when dt.m = 'out' and dt.user_id = 0 then dt.days end)
+        sum(case when dt.m = 'out' and dt.user_id = 0 then dt.cnt end)::numeric,
+        sum(case when dt.m = 'out' and dt.user_id = 0 then dt.workers end)
     ) as events_out_per_day,
-
+    --
+    {% for row in datasets.users.data %}
+    sum(case when dt.m = 'in' and dt.user_id = {{row.id}} then dt.cnt end) as u{{row.id}}_events_in,
+    sum(case when dt.m = 'out' and dt.user_id = {{row.id}} then dt.cnt end) as u{{row.id}}_events_out,
+    sum(case when dt.m = 'now' and dt.user_id = {{row.id}} then dt.cnt end) as u{{row.id}}_current,
+    f_division(
+        sum(case when dt.m = 'out' and dt.user_id = {{row.id}} then dt.cnt end)::numeric,
+        sum(case when dt.m = 'out' and dt.user_id = {{row.id}} then dt.workers end)
+    ) as u{{row.id}}_events_out_per_day,
+    {% endfor %}
     skelet.row_style,
     skelet.id as state_id
 from skelet

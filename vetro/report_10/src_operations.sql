@@ -15,6 +15,16 @@ with params as (
         -- current_date as d_end
 ),
 
+complex_state as (
+    select -1 as state_id, array[-3, 18, 16, 15] as states union all
+    select -2 as state_id, array[2, 4, 24, 5, 19] as states union all
+    select -4 as state_id, array[22, 23] as states union all
+    select -5 as state_id, array[6, 25] as states union all
+    select -6 as state_id, array[14, 3, 21, 20, 8, 9] as states union all
+    select -7 as state_id, array[10, 13] as states union all
+    select -8 as state_id, array[10, 13] as states
+),
+
 -- Документы
 documents as (
     select d.id,
@@ -52,7 +62,7 @@ events as (
     and de.state_to_id != coalesce(de.state_from_id, -3)
 ),
 
-operations as (
+operations_ as (
     select
         'in' as m,
         e.state_to_id as state_id,
@@ -97,6 +107,15 @@ operations as (
         null as event_id,
         null as d_create
     from documents d
+),
+
+operations as (
+    select op.*
+    from operations_ op
+    where exists (
+        select null from ({{datasets.users.sql}}) u
+        where u.id = op.user_id
+    )
 )
 
 --------------------------------------------------------------------------------

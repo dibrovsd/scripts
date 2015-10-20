@@ -6,22 +6,20 @@ u"""
 
 from django.core.cache import cache
 from django.utils import timezone
-from docflow.models import Document2 as Document
+from docflow.models import Document2, Document3
 from docflow.utils import get_project_manager
 from base.models import User
 
 
 # Менять тут
-document_id = 10810
-n_contract = u'PAZ1503976917'
+document_id = 3889
+n_contract = u'RAT1504044943'
 
 # Константы
-project_id = 2
-user_id = 42  # Дибров
+project_id = 3
+user = User.objects.get(pk=42)  # Дибров
 
-user = User.objects.get(pk=user_id)
-
-document = Document.objects.get(pk=document_id)
+document = Document3.objects.get(pk=document_id)
 pm = get_project_manager(user=user, project_id=project_id)
 
 document.n_contract = n_contract

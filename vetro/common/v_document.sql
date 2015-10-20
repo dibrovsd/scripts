@@ -48,13 +48,12 @@ create or replace view reports.v_document as
            d.direction_stoa_id as stoa_id,
            stoa.company_id as stoa_company_id,
            de.user_responsible_id as responsible_id,
-           e.state_to_id as state_id,
+           de.state_to_id as state_id,
            event_state2.user_responsible_id as curator_id,
            d.inscompany_id
     from docflow_document1 d
     left join docflow_documentevent1 de on de.id = d.last_event_id
-    left join docflow_event1 e on e.id = de.event_id
-    left join docflow_state1 st on st.id = e.state_to_id
+    left join docflow_state1 st on st.id = de.state_to_id
     left join base_city city on city.id = d.city_auto_host_id
     left join base_stoa stoa on stoa.id = d.direction_stoa_id
     left join base_stoacompany stoacompany on stoacompany.id = stoa.company_id

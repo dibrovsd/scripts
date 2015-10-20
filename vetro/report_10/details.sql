@@ -1,16 +1,5 @@
 {{datasets.src_operations.sql}},
 
-complex_state as (
-    select -1 as state_id, array[-3, 18, 16, 15] as states union all
-    select -2 as state_id, array[2, 4, 24, 5, 19] as states union all
-    select -3 as state_id, array[-3] as states union all
-    select -4 as state_id, array[22, 23] as states union all
-    select -5 as state_id, array[6, 25] as states union all
-    select -6 as state_id, array[14, 3, 21, 20, 8, 9] as states union all
-    select -7 as state_id, array[10, 13] as states union all
-    select -8 as state_id, array[10, 13] as states
-),
-
 op as (
     select op.* from operations op
     where 1 = 1
