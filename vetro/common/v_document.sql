@@ -25,6 +25,11 @@ create or replace view reports.v_document as
                when damages.action = 1 then 'Замена'
                when damages.action = 2 then 'Ремонт'
            end as damages_action,
+           case
+               when d.city_auto_host_id = 12
+                   then 'Москва'
+               else 'Регион'
+           end as region,
            -- Стекло для замены
            replace_glass.code_euro as gfr_code_euro,
            replace_glass.code_original as gfr_code_original,

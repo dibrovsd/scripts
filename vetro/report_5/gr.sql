@@ -1,87 +1,30 @@
-with params as (
-    select
-        [[env.period.0]] as d_start,
-        [[env.period.1]] as d_end,
-        [[env.city_auto_host]]::integer as city_auto_host,
-        [[env.direction_stoa]]::integer as direction_stoa,
-        [[env.stoa_company]]::integer as stoa_company,
-        [[env.curator]]::integer as curator,
-        [[env.inscompany]]::integer as inscompany
+{{datasets.src.sql}},
 
-        -- 0 as city_auto_host,
-        -- 0 as direction_stoa,
-        -- 0 as responsible,
-        -- to_date('01.07.2015', 'dd.mm.yyyy') as d_start,
-        -- to_date('01.08.2015', 'dd.mm.yyyy') - interval '1 second' as d_end
-),
-
--- База
-base as (
-    select
-        d.damages_action as action,
-        case
-            when d.city_auto_host_id = 12
-                then 'Москва'
-            else 'Регион'
-        end as region,
-        case
-            when d.damages_action = 'Замена'
-                then d.replace_glass_glass_type
-            else 'Итого'
-        end as glass_type,
-        round(d.repair_date_real::date - d.direction_get_date::date) as days_repair, -- До ремонта
-        round(d.d_documents_send::date - d.repair_date_real::date) as days_documents, -- До передачи документов в СК
-        round(d.pay_date::date - d.d_documents_send::date) as days_payment, -- До оплаты
-        round(d.pay_date::date - d.direction_get_date::date) as days_summary, -- Полный цикл
-        d.measure_date
-    from (
-        select d.*,
-            d.repair_date_real as measure_date
-        from reports.v_document d
-    ) d
-    cross join params
-    where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
-      and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
-      and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
-      and (params.curator = 0 or d.curator_id = params.curator)
-      and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
-      and d.measure_date between params.d_start and params.d_end
-),
-
--- Считаем по дате документов
-base_direction_get as (
-
-),
-
--- Считаем по дате оплаты
-base_payment as (),
-
--- Группируем и объединяем
 base_gr as (
     select
-        t.action,
-        t.region,
-        t.glass_type,
+        op.action,
+        op.region,
+        op.glass_type,
         --
-        count(days_repair) as days_repair_cnt,
-        sum(days_repair) as days_repair_sum,
+        count(case when op.m = 'send_to_ins' then days_repair end) as days_repair_cnt,
+        sum(case when op.m = 'send_to_ins' then days_repair end) as days_repair_sum,
         --
-        count(case when days_repair between 0 and 4 then 1 end) as days_repair_cnt_0_4,
-        count(case when days_repair between 0 and 9 then 1 end) as days_repair_cnt_0_9,
-        count(case when days_repair between 0 and 14 then 1 end) as days_repair_cnt_0_14,
-        count(case when days_repair between 0 and 24 then 1 end) as days_repair_cnt_0_24,
-        count(case when days_repair >= 24 then 1 end) as days_repair_cnt_25,
+        count(case when op.m = 'send_to_ins' and days_repair between 0 and 4 then 1 end) as days_repair_cnt_0_4,
+        count(case when op.m = 'send_to_ins' and days_repair between 0 and 9 then 1 end) as days_repair_cnt_0_9,
+        count(case when op.m = 'send_to_ins' and days_repair between 0 and 14 then 1 end) as days_repair_cnt_0_14,
+        count(case when op.m = 'send_to_ins' and days_repair between 0 and 24 then 1 end) as days_repair_cnt_0_24,
+        count(case when op.m = 'send_to_ins' and days_repair >= 24 then 1 end) as days_repair_cnt_25,
         --
-        count(days_documents) as days_documents_cnt,
-        sum(days_documents) as days_documents_sum,
+        count(case when op.m = 'pay' then days_documents end) as days_documents_cnt,
+        sum(case when op.m = 'pay' then days_documents end) as days_documents_sum,
         --
-        count(days_payment) as days_payment_cnt,
-        sum(days_payment) as days_payment_sum,
+        count(case when op.m = 'pay' then days_payment end) as days_payment_cnt,
+        sum(case when op.m = 'pay' then days_payment end) as days_payment_sum,
         --
-        count(days_summary) as days_summary_cnt,
-        sum(days_summary) as days_summary_sum
-    from base t
-    group by t.action, t.region, t.glass_type
+        count(case when op.m = 'pay' then days_summary end) as days_summary_cnt,
+        sum(case when op.m = 'pay' then days_summary end) as days_summary_sum
+    from operations op
+    group by op.action, op.region, op.glass_type
 ),
 
 -- Итоги регионов
@@ -137,7 +80,7 @@ cumul_1 as (
     group by t.action, t.glass_type
 ),
 
--- Итоги стекол
+-- Итоги типов стекол
 cumul_2 as (
     select
         t.action,
@@ -245,6 +188,7 @@ cumul_3 as (
     group by t.glass_type, t.region
 ),
 
+-- Финальный расчет
 cumul as (
     select
         t.action,
