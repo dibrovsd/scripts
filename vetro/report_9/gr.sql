@@ -3,8 +3,8 @@ with params as (
         [[env.curator]]::integer as curator,
         [[env.inscompany]]::integer as inscompany,
         [[env.handling_type]]::integer as handling_type,
-        [[env.period.0]]::date as d_start,
-        [[env.period.1]]::date as d_end
+        [[env.period.0]] as d_start,
+        [[env.period.1]] as d_end
 
         -- 0 as curator,
         -- 0 as inscompany,
@@ -12,7 +12,7 @@ with params as (
         -- current_date as d_end
 ),
 
-base as (
+base_ as (
     select
         d.{{env.group_by}} as group_field,
         d.{{env.group_by}}_id as group_field_id,
@@ -23,7 +23,8 @@ base as (
         d.d_create,
         d.repair_date_real,
         d.pay_date,
-        d.pay_sum
+        d.pay_sum,
+        d.city_id
     from reports.v_document d
     cross join params
     where 1 = 1
@@ -41,6 +42,32 @@ base as (
         {% endif %}
 ),
 
+-- задублим базу по регионам (Посчитаем еще раз их)
+base as (
+    select
+        d.group_field,
+        d.group_field_id,
+        d.id,
+        d.d_create,
+        d.repair_date_real,
+        d.pay_date,
+        d.pay_sum
+    from base_ d
+
+    union all
+
+    select
+        'Регионы' as group_field,
+        -1 as group_field_id,
+        d.id,
+        d.d_create,
+        d.repair_date_real,
+        d.pay_date,
+        d.pay_sum
+    from base_ d
+    where d.city_id != 12 -- Не москва
+),
+
 base_event as (
     select d.group_field_id,
         e.state_to_id
@@ -53,12 +80,13 @@ base_event as (
 -- На этот скелет будем нанизывать группировки по разным
 base_skeleton as (
     {% if env.group_by == 'city' %}
-        select id, title from base_city
+        select id, title, 1 as group_order from base_city
 
     {% elif env.group_by == 'stoa' %}
         select
             s.id,
-            c.title ||' > '|| sc.title || ' > ' || s.title as title
+            c.title ||' > '|| sc.title || ' > ' || s.title as title,
+            1 as group_order
         from base_stoa s
         join base_stoacompany sc on sc.id = s.company_id
         join base_city c on c.id = s.city_id
@@ -66,7 +94,8 @@ base_skeleton as (
     {% elif env.group_by == 'stoa_company' %}
         select
             comp.id,
-            comp.title || ' ('|| stoa.city_title ||')' as title
+            comp.title || ' ('|| stoa.city_title ||')' as title,
+            1 as group_order
         from base_stoacompany comp
         left join (
             select
@@ -79,6 +108,9 @@ base_skeleton as (
         order by title
 
     {% endif %}
+
+    union all
+    select -1 as id, 'Регионы' title, 2 as group_order
 
     -- select
     --     group_field,
@@ -145,6 +177,7 @@ out_archive as (
 data as (
     select s.id as group_id,
         s.title as group_title,
+        s.group_order,
         incoming.*,
         out_repair.cnt as out_repair_cnt,
         out_wp.cnt as out_wp_cnt,
@@ -170,7 +203,7 @@ select
     t.out_pay_cnt,
     t.out_pay_sum,
     t.out_archive_cnt,
-    1 as group_order
+    t.group_order
 from data t
 
 union all
@@ -186,7 +219,8 @@ select
     sum(t.out_pay_cnt) as out_pay_cnt,
     sum(t.out_pay_sum) as out_pay_sum,
     sum(t.out_archive_cnt) as out_archive_cnt,
-    2 as group_order
+    3 as group_order
 from data t
+where t.group_id > 0
 
 order by group_order, "ИтогоВход" desc nulls last
