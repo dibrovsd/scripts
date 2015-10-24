@@ -2,6 +2,7 @@ with params as (
     select
     [[env.curator]]::integer as curator,
     [[env.inscompany]]::integer as inscompany,
+    [[env.handling_type]]::integer as handling_type,
     [[env.period.0]]::date as d_start,
     [[env.period.1]]::date as d_end
 
@@ -19,6 +20,7 @@ periods as (
     where d.d_create between params.d_start and params.d_end
         and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
         and (params.curator = 0 or d.curator_id = params.curator)
+        and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 )
 
 select * from (

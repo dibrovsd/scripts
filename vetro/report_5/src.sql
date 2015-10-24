@@ -4,6 +4,7 @@ with params as (
         [[env.period.1]] as d_end,
         [[env.city_auto_host]]::integer as city_auto_host,
         [[env.direction_stoa]]::integer as direction_stoa,
+        [[env.handling_type]]::integer as handling_type,
         [[env.stoa_company]]::integer as stoa_company,
         [[env.curator]]::integer as curator,
         [[env.inscompany]]::integer as inscompany
@@ -40,6 +41,7 @@ documents as (
       and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
       and (params.curator = 0 or d.curator_id = params.curator)
       and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
+      and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 ),
 
 operations as (

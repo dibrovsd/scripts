@@ -3,6 +3,7 @@ with params as (
         [[env.city]]::integer as city,
         [[env.stoa_company]]::integer as stoa_company,
         [[env.inscompany]]::integer as inscompany,
+        [[env.handling_type]]::integer as handling_type,
         [[env.period.0]] as d_start,
         [[env.period.1]] as d_end
 
@@ -27,6 +28,7 @@ documents as (
       and (params.city = 0 or d.city_auto_host_id = params.city)
       and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
       and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
+      and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 )
 
 --------------------------------------------------------------------------------

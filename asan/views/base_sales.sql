@@ -250,6 +250,12 @@ create or replace view reports.base_sales as
              order by terr_log.d_create desc
              limit 1) as issue_territory_id,
 
+             (select terr_log.territory_id
+              from base_userlog terr_log
+              where terr_log.user_id = s.seller_id
+              order by terr_log.d_create
+              limit 1) as issue_territory_id_first,
+
             -- Суммарная премия за календарный месяц
             sum(s.s_premium) over(partition by to_char(s.d_issue, 'yyyy_mm'),
                                                s.inscompany_id) as s_premium_month
@@ -302,5 +308,9 @@ create or replace view reports.base_sales as
         s.delivery_region,
         s.delivery_address,
         s.delivery_comments,
-        coalesce(s.issue_territory_id, s.current_territory_id) as seller_territory_id
+        -- Если нет актуальной записи лога, ищем самую первую, хоть и устаревшую
+        -- а потом текущую (если ни одной записи лога нет)
+        coalesce(s.issue_territory_id,
+                 s.issue_territory_id_first,
+                 s.current_territory_id) as seller_territory_id
     from calculated1 s

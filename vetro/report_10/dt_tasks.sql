@@ -14,6 +14,7 @@ select
     d.curator as "Куратор",
     d.damages_action as "Вид работ",
     d.replace_glass_glass_type as "Вид стекла на замену",
+    d.handling_type as "Тип обращений",
     --
     lib.title as "Тип задачи",
     t.d_create as "Создана",
@@ -25,13 +26,13 @@ inner join df_task_tasktype1 lib on lib.id = t.tasktype_id
 inner join base_user u on u.id = t.responsible_id
 where exists (
     select null from operations op
-    where 1 = 1
+    where op.id = t.id
+
     {% if get.dt == 'task_cnt_in' %}
         and op.m = 'in'
     {% else %}
         and op.m =  'out'
     {% endif %}
-    and op.id = t.id
 
     {% if get.user != '0' %}
         and op.user_id = [[get.user]]::integer

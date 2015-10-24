@@ -16,6 +16,7 @@ create or replace view reports.v_document as
            d.d_documents_send,
            d.s_repair_glass,
            d.s_repair_work,
+           d.incoming_date,
            coalesce(d.s_repair_glass, 0) + coalesce(d.s_repair_work, 0) as s_repair_all,
            case
                when damages.action = 1 and replace_glass.glass_type = 1 then 'Оригинальное'
@@ -43,6 +44,7 @@ create or replace view reports.v_document as
            auto_model.title as auto_model,
            d.auto_number,
            d.direction_deductible as deductible,
+           handling_type.title as handling_type,
            --
            st.title as state,
            u.last_name ||' '|| u.first_name as responsible,
@@ -55,7 +57,9 @@ create or replace view reports.v_document as
            de.user_responsible_id as responsible_id,
            de.state_to_id as state_id,
            event_state2.user_responsible_id as curator_id,
-           d.inscompany_id
+           d.inscompany_id,
+           d.handling_type as handling_type_id,
+           replace_glass.status as gfr_status_id
     from docflow_document1 d
     left join docflow_documentevent1 de on de.id = d.last_event_id
     left join docflow_state1 st on st.id = de.state_to_id
@@ -69,6 +73,7 @@ create or replace view reports.v_document as
     left join base_inscompany inscompany on inscompany.id = d.inscompany_id
     left join base_automark auto_mark on auto_mark.id = d.auto_mark_id
     left join base_automodel auto_model on auto_model.id = d.auto_model_id
+    left join reports.handling_type on handling_type.id = d.handling_type
     -- Повреждения
     left join (
         select damages.document_id,
@@ -81,11 +86,16 @@ create or replace view reports.v_document as
     left join (
         select de1.document_id,
             de1.user_responsible_id,
-            row_number() over(partition by de1.document_id order by de1.d_create desc) as rn
+            e1.state_to_id as state_id,
+            row_number() over(partition by de1.document_id, e1.state_to_id order by de1.d_create desc) as rn
         from docflow_documentevent1 de1
         join docflow_event1 e1 on e1.id = de1.event_id
-        where e1.state_to_id = 2 -- Приглашение на осмотр
+        where e1.state_to_id in (2, 24) -- (Приглашение на осмотр, Определение типа стекла по УУ)
     ) event_state2 on event_state2.document_id = d.id
+                   and (
+                       d.handling_type = 1 and state_id = 2
+                       or d.handling_type = 2 and state_id = 24
+                   )
                    and event_state2.rn = 1
     left join base_user curator on curator.id = event_state2.user_responsible_id
     where d.deleted = false

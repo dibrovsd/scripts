@@ -2,6 +2,7 @@ with params as (
     select
          [[env.city_auto_host]]::integer as city_auto_host,
          [[env.direction_stoa]]::integer as direction_stoa,
+         [[env.handling_type]]::integer as handling_type,
          [[env.responsible]]::integer as curator
 
         -- 0 as city_auto_host,
@@ -24,6 +25,7 @@ documents as (
     where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
       and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
       and (params.curator = 0 or d.curator_id = params.curator)
+      and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 
         {% if 'customer_service' in user_params.roles %}
            and d.curator_id = {{user.id}}

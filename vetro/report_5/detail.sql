@@ -6,6 +6,7 @@ select
     d.state as "Этап",
     d.city as "Город",
     d.stoa as "СТОА",
+    d.handling_type as "Тип обращений",
     d.responsible as "Ответственный",
     d.direction_get_date as "Дата получения направления",
     d.repair_date_real as "Дата ремонта (факт)",

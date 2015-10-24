@@ -12,7 +12,7 @@ gr_day as (
     group by op.m, op.state_id, op.user_id, date_trunc('day', op.d_create)
 ),
 
--- Операции за период
+-- Операции за период (нормированные по дню операции)
 gr as (
     select
         op.m,
@@ -21,7 +21,7 @@ gr as (
         sum(cnt) as cnt,
         1 as workers
     from gr_day op
-    group by op.m, op.state_id, op.user_id
+    group by op.m, op.state_id, op.user_id, d_create
 
     union all
 
@@ -77,6 +77,7 @@ gr_cumul2 as (
         sum(gr.cnt) as cnt,
         sum(gr.workers) as workers
     from gr_cumul1 gr
+    where gr.state_id > 0 or gr.state_id = -3
     group by gr.m, gr.user_id
 
 ),

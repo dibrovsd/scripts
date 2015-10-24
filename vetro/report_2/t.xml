@@ -7,19 +7,20 @@
         <field name="doc_state" display="0"/>
         <field name="task_type" display="0"/>
         <field name="task_state" display="0"/>
-        
-        <field name="days" classes="number" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]"/>
-        
-        <field name="cnt" classes="number" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]"/>
-        
-        <field name="cnt_0_2" classes="number cnt_0_2" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=0&amp;d_to=2"/>
-        
-        <field name="cnt_3_5" classes="number cnt_3_5" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=3&amp;d_to=5"/>
-        
-        <field name="cnt_6_10" classes="number cnt_6_10" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=6&amp;d_to=10"/>
-        
-        <field name="cnt_11_20" classes="number cnt_11_20" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=11&amp;d_to=20"/>
-        
-        <field name="cnt_20" classes="number cnt_20" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=20&amp;d_to="/>
+        <field name="gfr_status_id" display="0"/>
+
+        <field name="days" classes="number" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;gfr_status=[[row.gfr_status_id]]"/>
+
+        <field name="cnt" classes="number" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;gfr_status=[[row.gfr_status_id]]"/>
+
+        <field name="cnt_0_2" classes="number cnt_0_2" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=0&amp;d_to=2&amp;gfr_status=[[row.gfr_status_id]]"/>
+
+        <field name="cnt_3_5" classes="number cnt_3_5" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=3&amp;d_to=5&amp;gfr_status=[[row.gfr_status_id]]"/>
+
+        <field name="cnt_6_10" classes="number cnt_6_10" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=6&amp;d_to=10&amp;gfr_status=[[row.gfr_status_id]]"/>
+
+        <field name="cnt_11_20" classes="number cnt_11_20" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=11&amp;d_to=20&amp;gfr_status=[[row.gfr_status_id]]"/>
+
+        <field name="cnt_20" classes="number cnt_20" digits="0" lnk="?m=[[row.m_type]]&amp;doc_state=[[row.doc_state]]&amp;task_type=[[row.task_type]]&amp;task_state=[[row.task_state]]&amp;d_from=20&amp;d_to=&amp;gfr_status=[[row.gfr_status_id]]"/>
     </fields>
 </xml>

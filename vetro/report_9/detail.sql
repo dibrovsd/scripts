@@ -2,6 +2,7 @@ with params as (
     select
         [[env.curator]]::integer as curator,
         [[env.inscompany]]::integer as inscompany,
+        [[env.handling_type]]::integer as handling_type,
         [[env.period.0]]::date as d_start,
         [[env.period.1]]::date as d_end,
 
@@ -42,6 +43,7 @@ select
     d.state as "Этап",
     d.city as "Город",
     d.stoa as "СТОА",
+    d.handling_type as "Тип обращений",
     d.responsible as "Ответственный",
     d.direction_get_date::date as "Дата получения направления",
     d.inspection_date::date as "Дата осмотра (план)",
@@ -63,6 +65,7 @@ cross join params
 where 1 = 1
     and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
     and (params.curator = 0 or d.curator_id = params.curator)
+    and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
     and (params.group_id = 0 or d.{{env.group_by}}_id = params.group_id)
     and d.{{env.group_by}}_id is not null
 

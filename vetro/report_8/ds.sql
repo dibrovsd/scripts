@@ -4,6 +4,7 @@ with params as (
         [[env.direction_stoa]]::integer as direction_stoa,
         [[env.stoa_company]]::integer as stoa_company,
         [[env.inscompany]]::integer as inscompany,
+        [[env.handling_type]]::integer as handling_type,
 
         {% if env.period %}
             [[env.period.0]]::date as d_from,
@@ -27,6 +28,7 @@ select
     d.event_create as "Отправлено",
     d.state as "Этап",
     d.direction_num as "Номер направления",
+    d.handling_type as "Тип обращений",
     d.city as "Город пребывания ТС",
     d.stoa as "СТОА",
     d.inscompany as "СК",
@@ -47,6 +49,7 @@ where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
   and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
   and (params.stoa_company = 0 or d.stoa_company_id = params.stoa_company)
   and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
+  and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
   and d.d_create between params.d_from and params.d_to
 
   {% if not get.full %}

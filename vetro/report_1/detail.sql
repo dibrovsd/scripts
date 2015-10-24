@@ -3,6 +3,7 @@ with params as (
         [[env.city_auto_host]]::integer as city_auto_host,
         [[env.direction_stoa]]::integer as direction_stoa,
         [[env.responsible]]::integer as curator,
+        [[env.handling_type]]::integer as handling_type,
 
         to_date([[get.d_from]], 'dd.mm.yyyy') as d_from,
         to_date([[get.d_to]], 'dd.mm.yyyy') + interval '1 day - 1 second' as d_to,
@@ -24,6 +25,7 @@ select d.id,
        d.state as "Этап",
        d.city as "Город",
        d.stoa as "СТОА",
+       d.handling_type as "Тип обращений",
        d.responsible as "Ответственный",
        d.direction_get_date::date as "Дата получения направления",
        d.inspection_date::date as "Дата осмотра (план)",
@@ -43,6 +45,7 @@ where d.inscompany_id is not null
     and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
     and (params.curator = 0 or d.curator_id = params.curator)
     and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
+    and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 
     {% if 'customer_service' in user_params.roles %}
        and d.curator_id = {{user.id}}

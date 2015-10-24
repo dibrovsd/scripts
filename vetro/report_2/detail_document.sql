@@ -3,6 +3,7 @@ with params as (
         [[env.city_auto_host]]::integer as city_auto_host,
         [[env.direction_stoa]]::integer as direction_stoa,
         [[env.responsible]]::integer as responsible,
+        [[env.handling_type]]::integer as handling_type,
         [[env.inscompany]]::integer as inscompany,
         [[env.curator]]::integer as curator,
 
@@ -31,6 +32,7 @@ documents_base as (
         d.auto_mark as "Марка ТС",
         d.auto_model as "Модель ТС",
         d.auto_number as "Номер ТС",
+        d.handling_type as "Тип обращений",
         d.state as "Этап",
         d.city as "Город",
         d.stoa as "СТОА",
@@ -58,10 +60,19 @@ documents_base as (
       and (params.responsible = 0 or d.responsible_id = params.responsible)
       and (params.inscompany = 0 or d.inscompany_id = params.inscompany)
       and (params.curator = 0 or d.curator_id = params.curator)
+      and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 
       and (params.doc_state is null
            or params.doc_state = 0 and d.state_id is null
            or d.state_id = params.doc_state)
+
+        {% if get.gfr_status == 'stock' %}
+          and d.state_id = 4 and d.gfr_status_id = 1
+
+        {% elif get.gfr_status == 'sale' %}
+          and d.state_id = 4 and (d.gfr_status_id = 2 or d.gfr_status_id is null)
+
+        {% endif %}
 
         {% if 'customer_service' in user_params.roles %}
            and d.curator_id = {{user.id}}
@@ -76,9 +87,10 @@ documents_base as (
 
 select
     d.*
+    -- count(1)
 from documents_base d
 cross join params
 where 1 = 1
     and (params.d_from is null or d."Дней" >= params.d_from)
     and (params.d_to is null or d."Дней" <= params.d_to)
-order by "Отправлен" desc
+-- order by "Отправлен" desc

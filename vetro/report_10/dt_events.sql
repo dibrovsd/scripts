@@ -4,6 +4,10 @@ op as (
     select op.* from operations op
     where 1 = 1
 
+    {% if get.user != '0' %}
+        and op.user_id = [[get.user]]::integer
+    {% endif %}
+
     {% if get.state == '0' %}
 
     {% elif '-' in get.state %}
@@ -45,7 +49,8 @@ details as (
         d.responsible as "Ответственный",
         d.curator as "Куратор",
         d.damages_action as "Вид работ",
-        d.replace_glass_glass_type as "Вид стекла на замену"
+        d.replace_glass_glass_type as "Вид стекла на замену",
+        d.handling_type as "Тип обращений"
         {% if 'events_' in get.dt %}
             ,de.d_create as "Дата операции"
             ,st_from.title as "Откуда"
