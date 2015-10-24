@@ -35,6 +35,10 @@ create or replace view reports.v_document as
            replace_glass.code_euro as gfr_code_euro,
            replace_glass.code_original as gfr_code_original,
            manufacturer.title as gfr_code_manufacturer,
+           case
+                when in_stock.document_id is not null then 'Есть'
+                else 'Нет'
+           end as glass_in_stock, -- Одно из стекол есть в наличии
            de.d_create as event_create,
            d.pay_date,
     	   d.pay_sum,
@@ -97,5 +101,11 @@ create or replace view reports.v_document as
                        or d.handling_type = 2 and state_id = 24
                    )
                    and event_state2.rn = 1
+    -- Стекла под замену, которые есть в наличии
+    left join (
+        select in_stock.document_id,
+            row_number() over(partition by in_stock.document_id order by in_stock.id desc) as rn
+        from docflow_p1fsglassstock in_stock
+    ) in_stock on in_stock.document_id = d.id and in_stock.rn = 1
     left join base_user curator on curator.id = event_state2.user_responsible_id
     where d.deleted = false

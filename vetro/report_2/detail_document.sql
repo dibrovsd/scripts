@@ -66,12 +66,8 @@ documents_base as (
            or params.doc_state = 0 and d.state_id is null
            or d.state_id = params.doc_state)
 
-        {% if get.gfr_status == 'stock' %}
-          and d.state_id = 4 and d.gfr_status_id = 1
-
-        {% elif get.gfr_status == 'sale' %}
-          and d.state_id = 4 and (d.gfr_status_id = 2 or d.gfr_status_id is null)
-
+        {% if get.glass_in_stock != '' %}
+          and d.state_id = 4 and d.glass_in_stock = [[get.glass_in_stock]]
         {% endif %}
 
         {% if 'customer_service' in user_params.roles %}

@@ -35,12 +35,8 @@ documents_base as (
       and (params.curator = 0 or d.curator_id = params.curator)
       and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 
-      {% if get.gfr_status == 'stock' %}
-        and d.state_id = 4 and d.gfr_status_id = 1
-
-      {% elif get.gfr_status == 'sale' %}
-        and d.state_id = 4 and (d.gfr_status_id = 2 or d.gfr_status_id is null)
-
+      {% if get.glass_in_stock != '' %}
+        and d.state_id = 4 and d.glass_in_stock = [[get.glass_in_stock]]
       {% endif %}
 
       {% if not user_params.roles %}
