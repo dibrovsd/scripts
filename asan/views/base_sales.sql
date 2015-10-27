@@ -266,10 +266,31 @@ create or replace view reports.base_sales as
     calculated1 as (
         select s.*,
             case
-                -- AXA
+                -- AXA после сентября более 35000 в месяц
                 when s.inscompany_id = 11
-                     and s.product = 'ОСАГО'
-                     and s_premium_month >= 15000 then 0.335
+                    and s.product = 'ОСАГО'
+                    and s.d_issue >= to_date('01.09.2015', 'dd.mm.yyyy')
+                    and s_premium_month >= 35000
+                        then 0.355
+
+                -- AXA после сентября более 35000 в месяц
+                when s.inscompany_id = 11
+                    and s.product = 'ОСАГО'
+                    and s.d_issue >= to_date('01.09.2015', 'dd.mm.yyyy')
+                    and s_premium_month >= 25000
+                        then 0.345
+
+                -- AXA до сентября более 15000 в месяц
+                when s.inscompany_id = 11
+                    and s.product = 'ОСАГО'
+                    and s_premium_month >= 15000
+                        then 0.335
+
+                -- АЗСыгорта после октября
+                when s.inscompany_id = 3
+                    and s.product = 'ОСАГО'
+                    and s.d_issue >= to_date('01.10.2015', 'dd.mm.yyyy')
+                        then 0.35
             end as replace_comission
         from calculated s
     )

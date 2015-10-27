@@ -28,6 +28,7 @@ documents as (
         d.replace_glass_glass_type as glass_type,
         --
         d.d_documents_send,
+        d.repair_date_real,
         d.pay_date,
         --
         round(d.repair_date_real::date - d.direction_get_date::date) as days_repair, -- До ремонта
@@ -59,7 +60,7 @@ operations as (
         d.days_summary
     from documents d
     cross join params
-    where d.d_documents_send between params.d_start and params.d_end
+    where d.repair_date_real between params.d_start and params.d_end
 
     union all
 

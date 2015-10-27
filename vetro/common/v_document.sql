@@ -106,6 +106,7 @@ create or replace view reports.v_document as
         select in_stock.document_id,
             row_number() over(partition by in_stock.document_id order by in_stock.id desc) as rn
         from docflow_p1fsglassstock in_stock
+        where in_stock.status = 1
     ) in_stock on in_stock.document_id = d.id and in_stock.rn = 1
     left join base_user curator on curator.id = event_state2.user_responsible_id
     where d.deleted = false
