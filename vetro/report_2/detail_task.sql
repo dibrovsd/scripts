@@ -42,7 +42,7 @@ where 1 = 1
         and tsk.tasktype_id = [[get.task_type]]::integer
     {% endif %}
 
-    {% if get.task_state != 'None' %}
+    {% if get.task_state != 'None' and get.task_state != '0' %}
         and tsk.state = [[get.task_state]]::integer
     {% endif %}
 

@@ -27,14 +27,15 @@ documents as (
         d.region,
         d.replace_glass_glass_type as glass_type,
         --
+        d.direction_date,
         d.d_documents_send,
         d.repair_date_real,
         d.pay_date,
         --
-        round(d.repair_date_real::date - d.direction_get_date::date) as days_repair, -- До ремонта
+        round(d.repair_date_real::date - d.direction_date::date) as days_repair, -- До ремонта
         round(d.d_documents_send::date - d.repair_date_real::date) as days_documents, -- До передачи документов в СК
         round(d.pay_date::date - d.d_documents_send::date) as days_payment, -- До оплаты
-        round(d.pay_date::date - d.direction_get_date::date) as days_summary -- Полный цикл
+        round(d.pay_date::date - d.direction_date::date) as days_summary -- Полный цикл
     from reports.v_document d
     cross join params
     where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)

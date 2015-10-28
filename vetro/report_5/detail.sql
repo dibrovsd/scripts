@@ -8,6 +8,7 @@ select
     d.stoa as "СТОА",
     d.handling_type as "Тип обращений",
     d.responsible as "Ответственный",
+    d.direction_date as "Дата направления",
     d.direction_get_date as "Дата получения направления",
     d.repair_date_real as "Дата ремонта (факт)",
     d.d_documents_send as "Дата передачи оригиналов",

@@ -13,6 +13,7 @@ create or replace view reports.v_document as
            d.inspection_date_real,
            d.repair_date,
            d.repair_date_real,
+           d.direction_date,
            d.d_documents_send,
            d.s_repair_glass,
            d.s_repair_work,
