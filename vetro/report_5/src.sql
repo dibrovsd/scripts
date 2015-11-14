@@ -61,7 +61,7 @@ operations as (
         d.days_summary
     from documents d
     cross join params
-    where d.repair_date_real between params.d_start and params.d_end
+    where d.direction_date between params.d_start and params.d_end
 
     union all
 

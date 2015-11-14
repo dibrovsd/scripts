@@ -31,6 +31,12 @@ gr as (
         {% elif env.seller_territory == 'asan' %}
             and seller_territory_id != 9
         {% endif %}
+
+        {% if 'call_center' in user_params.territory_only %}
+            and t.seller_territory_id = 9
+        {% elif 'asan' in user_params.territory_only %}
+            and t.seller_territory_id != 9
+        {% endif %}
     group by inscompany_id
 
 )

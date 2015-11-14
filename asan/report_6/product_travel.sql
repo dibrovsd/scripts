@@ -7,7 +7,7 @@ with params as (
 
         {% else %}
            [[env.period.0]] as d_start,
-           [[env.period.1]] as d_end
+           [[env.period.1]] + interval '1 day - 1 second' as d_end
 
         {% endif %}
 
@@ -29,6 +29,12 @@ gr as (
             and seller_territory_id = 9
         {% elif env.seller_territory == 'asan' %}
             and seller_territory_id != 9
+        {% endif %}
+
+        {% if 'call_center' in user_params.territory_only %}
+            and t.seller_territory_id = 9
+        {% elif 'asan' in user_params.territory_only %}
+            and t.seller_territory_id != 9
         {% endif %}
     group by inscompany_id
 

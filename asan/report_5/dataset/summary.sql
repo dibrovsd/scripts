@@ -69,6 +69,13 @@ expenses as (
         cross join params
         where exp.day between params.d_start and params.d_end
             and (params.territory is null or exp.segment = params.territory)
+
+            {% if 'call_center' in user_params.territory_only %}
+                and exp.segment = 'call_center'
+            {% elif 'asan' in user_params.territory_only %}
+                and exp.segment = 'asan'
+            {% endif %}
+
         group by date_trunc(params.trunc_by, exp.day), exp.expense_type
     ) t
     group by dt
@@ -115,6 +122,12 @@ sales as (
                 )
             or params.territory = 'call_center' and s.seller_territory_id = 9
         )
+
+        {% if 'call_center' in user_params.territory_only %}
+            and s.seller_territory_id = 9
+        {% elif 'asan' in user_params.territory_only %}
+            and s.seller_territory_id != 9
+        {% endif %}
 ),
 
 sales_gr as (
@@ -153,23 +166,29 @@ sales_gr2 as (
         sum(s_osago_discount) as s_osago_discount,
         sum(s_comission) as s_comission
     from sales_gr
+),
+
+sales_gr3 as (
+    select s.*,
+        --
+        exp.capital as exp_capital,
+        exp.recurrent as exp_recurrent,
+        exp.other as exp_other,
+        exp.summary as exp_summary,
+        --
+        s.s_comission - exp.summary as s_profit,
+        case
+            when s.s_comission >= exp.summary then 'background-color: #dff0d8;'
+            when s.s_comission < exp.summary then 'background-color: #f2dede;'
+        end as s_profit_style
+    from sales_gr2 s
+    left join expenses_gr exp on exp.dt = s.dt
+                              or exp.dt is null and s.dt is null
 )
 
--- select * from expenses_gr
-
-select s.*,
-    --
-    exp.capital as exp_capital,
-    exp.recurrent as exp_recurrent,
-    exp.other as exp_other,
-    exp.summary as exp_summary,
-    --
-    s.s_comission - exp.summary as s_profit,
-    case
-        when s.s_comission >= exp.summary then 'background-color: #dff0d8;'
-        when s.s_comission < exp.summary then 'background-color: #f2dede;'
-    end as s_profit_style
-from sales_gr2 s
-left join expenses_gr exp on exp.dt = s.dt
-                          or exp.dt is null and s.dt is null
+select
+    s.*,
+    case when s_profit > 0 then s_profit * 0.2 else 0 end as profit_tax,
+    case when s_profit > 0 then s_profit * 0.8 else 0 end as profit_net
+from sales_gr3 s
 order by dt

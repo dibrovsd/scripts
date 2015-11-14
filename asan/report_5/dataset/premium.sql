@@ -64,6 +64,12 @@ gr as (
             and s.seller_territory_id != 9
             and (params.territory_id is null or s.seller_territory_id = params.territory_id)
         {% endif %}
+
+        {% if 'call_center' in user_params.territory_only %}
+            and s.seller_territory_id = 9
+        {% elif 'asan' in user_params.territory_only %}
+            and s.seller_territory_id != 9
+        {% endif %}
     group by date_trunc(params.trunc_by, s.d_issue)::date
 )
 

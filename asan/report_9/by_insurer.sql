@@ -93,6 +93,12 @@ by_age as (
         and seller_territory_id != 9
     {% endif %}
 
+    {% if 'call_center' in user_params.territory_only %}
+        and t.seller_territory_id = 9
+    {% elif 'asan' in user_params.territory_only %}
+        and t.seller_territory_id != 9
+    {% endif %}
+
 ),
 
 by_age1 as (

@@ -33,6 +33,13 @@ select
     end as incoming_attrs
 from t1
 cross join period
-left join reports.rep4_incoming inc on inc.client like '%' || t1.id_client
+left join (
+    select
+        inc.client,
+        inc.summ,
+        row_number() over(partition by inc.client, inc.summ order by inc.client, inc.summ) as rn
+    from reports.rep4_incoming inc
+) inc on inc.client like '%' || t1.id_client
+      and inc.rn = 1
 where t1.d_start between period.d_start and period.d_end
 order by t1.tem_months

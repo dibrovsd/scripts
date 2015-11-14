@@ -24,6 +24,11 @@ collect as (
     from reports.base_sales s
     cross join params
     where s.d_issue between params.d_start and params.d_end
+    {% if 'call_center' in user_params.territory_only %}
+        and s.seller_territory_id = 9
+    {% elif 'asan' in user_params.territory_only %}
+        and s.seller_territory_id != 9
+    {% endif %}
 )
 
 select
