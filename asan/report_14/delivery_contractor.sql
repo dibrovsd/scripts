@@ -17,10 +17,12 @@ select
     s.delivery_date,
     s.delivery_time_from ||' '|| s.delivery_time_to as delivery_time,
     s.delivery_comments,
-    s.ins_phone
+    s.ins_phone,
+    u.last_name || ' ' || u.first_name as seller
 from reports.base_sales s
 cross join params
 left join docflow_city city on city.id = s.delivery_city_id
+inner join base_user u on u.id = s.seller_id
 where s.seller_territory_id = 9
   and s.contractor_id = params.contractor_id
   --
