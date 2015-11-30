@@ -123,117 +123,242 @@ cumul2 as (
     group by t.region
 ),
 
-structure as (
+structure_ as (
     -------------
-    select 'РЕСО-Гарантия' as title, 1 as n_order,
+    select 'РЕСО-Гарантия' as title,
         'background-color: #FFDAB9; font-weight: bold;' as row_style,
         null as region,
         null as inscompany_id
 
     union all
 
-    select 'Москва' as title, 2 as n_order,
+    select 'Москва' as title,
         '' as row_style,
         'Москва' as region,
         3 as inscompany_id
 
     union all
 
-    select 'Регионы' as title, 3 as n_order,
+    select 'Регионы' as title,
         '' as row_style,
         'Регион' as region,
         3 as inscompany_id
 
     union all
 
-    select 'Итого по Ресо-Гарантия' as title, 4 as n_order,
+    select 'Итого по Ресо-Гарантия' as title,
         '' as row_style,
         'Итого' as region,
         3 as inscompany_id
 
     union all
     -------------
-    select 'СОГЛАСИЕ' as title, 5 as n_order,
+    select 'СОГЛАСИЕ' as title,
         'background-color: #FFDAB9; font-weight: bold;' as row_style,
         null as region,
         null as inscompany_id
 
     union all
 
-    select 'Москва' as title, 6 as n_order,
+    select 'Москва' as title,
         '' as row_style,
         'Москва' as region,
         2 as inscompany_id
 
     union all
 
-    select 'Регионы' as title, 7 as n_order,
+    select 'Регионы' as title,
         '' as row_style,
         'Регион' as region,
         2 as inscompany_id
 
     union all
 
-    select 'Итого по Согласие' as title, 8 as n_order,
+    select 'Итого по Согласие' as title,
         '' as row_style,
         'Итого' as region,
         2 as inscompany_id
 
     union all
     -------------
-    select 'СОГАЗ' as title, 9 as n_order,
+    select 'СОГАЗ' as title,
         'background-color: #FFDAB9; font-weight: bold;' as row_style,
         null as region,
         null as inscompany_id
 
     union all
 
-    select 'Москва' as title, 10 as n_order,
+    select 'Москва' as title,
         '' as row_style,
         'Москва' as region,
         1 as inscompany_id
 
     union all
 
-    select 'Регионы' as title, 11 as n_order,
+    select 'Регионы' as title,
         '' as row_style,
         'Регион' as region,
         1 as inscompany_id
 
     union all
 
-    select 'Итого по СОГАЗ' as title, 12 as n_order,
+    select 'Итого по СОГАЗ' as title,
         '' as row_style,
         'Итого' as region,
         1 as inscompany_id
 
     union all
+
+
     -------------
-    select 'Итого' as title, 13 as n_order,
+    select 'Югория' as title,
+        'background-color: #FFDAB9; font-weight: bold;' as row_style,
+        null as region,
+        null as inscompany_id
+
+    union all
+
+    select 'Москва' as title,
+        '' as row_style,
+        'Москва' as region,
+        8 as inscompany_id
+
+    union all
+
+    select 'Регионы' as title,
+        '' as row_style,
+        'Регион' as region,
+        8 as inscompany_id
+
+    union all
+
+    select 'Итого по Югории' as title,
+        '' as row_style,
+        'Итого' as region,
+        8 as inscompany_id
+
+    union all
+
+    -------------
+    select 'Альфа Страхование' as title,
+        'background-color: #FFDAB9; font-weight: bold;' as row_style,
+        null as region,
+        null as inscompany_id
+
+    union all
+
+    select 'Москва' as title,
+        '' as row_style,
+        'Москва' as region,
+        7 as inscompany_id
+
+    union all
+
+    select 'Регионы' as title,
+        '' as row_style,
+        'Регион' as region,
+        7 as inscompany_id
+
+    union all
+
+    select 'Итого по Альфа Страхованию' as title,
+        '' as row_style,
+        'Итого' as region,
+        7 as inscompany_id
+
+    union all
+
+    -------------
+    select 'Зетта' as title,
+        'background-color: #FFDAB9; font-weight: bold;' as row_style,
+        null as region,
+        null as inscompany_id
+
+    union all
+
+    select 'Москва' as title,
+        '' as row_style,
+        'Москва' as region,
+        6 as inscompany_id
+
+    union all
+
+    select 'Регионы' as title,
+        '' as row_style,
+        'Регион' as region,
+        6 as inscompany_id
+
+    union all
+
+    select 'Итого по Зетта' as title,
+        '' as row_style,
+        'Итого' as region,
+        6 as inscompany_id
+
+    union all
+
+    -------------
+    select 'Тинькофф' as title,
+        'background-color: #FFDAB9; font-weight: bold;' as row_style,
+        null as region,
+        null as inscompany_id
+
+    union all
+
+    select 'Москва' as title,
+        '' as row_style,
+        'Москва' as region,
+        4 as inscompany_id
+
+    union all
+
+    select 'Регионы' as title,
+        '' as row_style,
+        'Регион' as region,
+        4 as inscompany_id
+
+    union all
+
+    select 'Итого по Тинькофф' as title,
+        '' as row_style,
+        'Итого' as region,
+        4 as inscompany_id
+
+    union all
+
+    -------------
+    select 'Итого' as title,
         'background-color: #DCDCDC; font-weight: bold;' as row_style,
         null as region,
         null as inscompany_id
 
     union all
 
-    select 'Москва' as title, 14 as n_order,
+    select 'Москва' as title,
         '' as row_style,
         'Москва' as region,
         -1 as inscompany_id
 
     union all
 
-    select 'Регионы' as title, 15 as n_order,
+    select 'Регионы' as title,
         '' as row_style,
         'Регион' as region,
         -1 as inscompany_id
 
     union all
 
-    select 'Итого' as title, 16 as n_order,
+    select 'Итого' as title,
         '' as row_style,
         'Итого' as region,
         -1 as inscompany_id
+),
+
+structure as (
+    select
+        t.*,
+        row_number() over() as n_order
+    from structure_ t
 )
 
 select
