@@ -273,14 +273,14 @@ create or replace view reports.base_sales as
                     and s_premium_month >= 35000
                         then 0.355
 
-                -- AXA после сентября более 35000 в месяц
+                -- AXA после сентября более 25000 в месяц
                 when s.inscompany_id = 11
                     and s.product = 'ОСАГО'
                     and s.d_issue >= to_date('01.09.2015', 'dd.mm.yyyy')
                     and s_premium_month >= 25000
                         then 0.345
 
-                -- AXA до сентября более 15000 в месяц
+                -- AXA более 15000 в месяц
                 when s.inscompany_id = 11
                     and s.product = 'ОСАГО'
                     and s_premium_month >= 15000
