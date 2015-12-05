@@ -1,0 +1,10 @@
+{% if get.user_id %}
+    {{tables.detail}}
+
+{% else %}
+    <div class='well well-sm'>{{forms.f}}</div>
+    {% if env.d_report %}
+        {{tables.t}}
+    {% endif %}
+
+{% endif %}

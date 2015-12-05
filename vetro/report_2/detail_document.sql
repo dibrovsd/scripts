@@ -43,8 +43,8 @@ where 1 = 1
 
     {% endif %}
 
-    {% if get.glass_in_stock != '' %}
-        and d1.state_id = 4 and d1.glass_in_stock = [[get.glass_in_stock]]
+    {% if get.state_measure != '' %}
+        and d1.state_measure = [[get.state_measure]]
     {% endif %}
 
     {% if get.d_from %}

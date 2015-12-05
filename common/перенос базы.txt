@@ -9,3 +9,8 @@ alter database django_hosting set default_transaction_isolation = 'read committe
 alter database django_hosting set client_encoding = 'UTF8';
 
 pg_restore --dbname=django_hosting --format=c --single-transaction --host=localhost --username=django < django_hosting.bk
+
+# Только одну таблицу
+pg_dump --format=c --host=localhost --username=django --table=tmp.base_osago asan > asan_base_osago.bk
+
+pg_restore --dbname=crm --format=c --single-transaction --host=localhost --username=django < asan_base_osago.bk

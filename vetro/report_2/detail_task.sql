@@ -46,10 +46,6 @@ where 1 = 1
         and tsk.state = [[get.task_state]]::integer
     {% endif %}
 
-    {% if get.glass_in_stock != '' %}
-        and d.state_id = 4 and d.glass_in_stock = [[get.glass_in_stock]]
-    {% endif %}
-
     {% if get.d_from %}
         and tsk.days >= [[get.d_from]]::integer
     {% endif %}

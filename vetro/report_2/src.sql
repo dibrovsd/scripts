@@ -22,8 +22,15 @@ documents_base as (
         case
             -- Согласование стекла с клиентом
             when d.state_id = 4 then d.glass_in_stock
+            -- Приглашение на осмотр
+            when d.state_id = 2 then exists (
+                    select null from df_task_task1 tsk
+                    where tsk.document_id = d.id
+                      and tsk.state != 3 -- открытая
+                      and tsk.tasktype_id = 5 -- перезвонить
+                )::varchar
             else ''
-        end as glass_in_stock
+        end as state_measure
     from reports.v_document d
     cross join params
     where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
@@ -76,7 +83,7 @@ documents as (
         d.id,
         coalesce(d.d_create_event, d.d_create)::date as d_start,
         coalesce(d.state_id, 0) as state_id,
-        d.glass_in_stock,
+        d.state_measure,
         current_date as d_end
     from documents_base d
 ),
