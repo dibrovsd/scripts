@@ -21,6 +21,7 @@ step1 as (
         d.city as "Город",
         d.stoa as "СТОА",
         d.responsible as "Ответственный",
+        d.deductible as "Франшиза",
         d.direction_get_date::date as "Дата получения направления",
         d.repair_date_real::date as "Дата ремонта (факт)",
         d.d_documents_send::date as "Дата передачи оригиналов",

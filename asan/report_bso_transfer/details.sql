@@ -1,11 +1,7 @@
 {{datasets.src.sql}}
 
 select
-    -- Проданный договор
-    bso.contract_project,
-    bso.contract_pk,
-    sales.n_contract as "Номер документа",
-    --
+    bso.id,
     case
         when d.blank_type = 1 then 'ОСАГО'
         when d.blank_type = 2 then 'S7'

@@ -22,8 +22,8 @@ documents_base as (
         case
             -- Согласование стекла с клиентом
             when d.state_id = 4 then d.glass_in_stock
-            -- Приглашение на осмотр
-            when d.state_id = 2 then exists (
+            -- Приглашение на осмотр, Приглашение на ремонт
+            when d.state_id in (2, 7) then exists (
                     select null from df_task_task1 tsk
                     where tsk.document_id = d.id
                       and tsk.state != 3 -- открытая

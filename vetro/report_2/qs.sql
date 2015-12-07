@@ -77,7 +77,7 @@ documents_gr as (
         sum(d.cnt_11_20),
         sum(d.cnt_20)
     from documents_gr_ d
-    where d.state_id in (4,2)
+    where d.state_id in (4,2,7)
     group by d.state_id
 ),
 
@@ -105,6 +105,8 @@ measures_ as (
 
     select 'Телефонное обслуживание' as title, null as doc_state, null as task_type, null as task_state, '' as state_measure union all
     select 'Приглашение клиента на ремонт' as title, 7 as doc_state, null as task_type, null as task_state, '' as state_measure union all
+    select '&nbsp;- есть задача перезвонить' as title, 7 as doc_state, null as task_type, null as task_state, 'true' as state_measure union all
+    select '&nbsp;- нет задачи перезвонить' as title, 7 as doc_state, null as task_type, null as task_state, 'false' as state_measure union all
 
     select 'Страховое событие' as title, null as doc_state, null as task_type, null as task_state, '' as state_measure union all
     select 'Согласование УУ со стороны СК' as title, 23 as doc_state, null as task_type, null as task_state, '' as state_measure union all
