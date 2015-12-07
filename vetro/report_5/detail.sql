@@ -19,39 +19,30 @@ select
     d.s_repair_all as "Итого по заказ-наряду",
     d.replace_glass_glass_type as "Вид стекла на замену",
     d.damages_action as "Вид работ",
-    op.days_repair as "Cрок выполнения работ"
+    --
+    op.d_start as "Дата начала",
+    op.d_end as "Дата окончания",
+    op.days_repair as "Cрок"
 from operations op
 join reports.v_document d on d.id = op.id
-where 1 = 1
+where op.m = '{{get.m}}'
+
     {% if get.action != 'Итого' %}
-    and op.action = [[get.action]]
+        and op.action = [[get.action]]
     {% endif %}
 
     {% if get.region != 'Итого' %}
-    and op.region = [[get.region]]
+        and op.region = [[get.region]]
     {% endif %}
 
     {% if get.glass_type != 'Итого' %}
         and op.glass_type = [[get.glass_type]]
     {% endif %}
 
-    {% if get.m == 'repair' %}
-        and op.m = 'send_to_ins'
-        {% if get.from %}
-            and op.days_repair >= [[get.from]]::integer
-        {% endif %}
-        {% if get.to  %}
-            and op.days_repair <= [[get.to]]::integer
-        {% endif %}
+    {% if get.from %}
+        and op.days >= [[get.from]]::integer
+    {% endif %}
 
-    {% else %}
-        and op.m = 'pay'
-        {% if get.m == 'documents' %}
-            and op.days_documents is not null
-        {% elif get.m == 'payment' %}
-            and op.days_payment is not null
-        {% elif get.m == 'summary' %}
-            and op.days_summary is not null
-        {% endif %}
-
+    {% if get.to %}
+        and op.days <= [[get.to]]::integer
     {% endif %}

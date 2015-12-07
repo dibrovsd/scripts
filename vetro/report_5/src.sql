@@ -26,7 +26,12 @@ documents as (
         d.damages_action as action,
         d.region,
         d.replace_glass_glass_type as glass_type,
+        d.handling_type_id,
         --
+        case
+            when d.handling_type_id = 1 then d.direction_get_date -- Направление
+            when d.handling_type_id = 2 then d.direction_date -- УУ
+        end as d_start,
         d.direction_date,
         d.d_documents_send,
         d.repair_date_real,
@@ -46,9 +51,13 @@ documents as (
       and (params.handling_type = 0 or d.handling_type_id = params.handling_type)
 ),
 
-operations as (
+_operations as (
+    -- Средний срок выполнения работ
     select
-        'send_to_ins' as m,
+        'repair' as m,
+        --
+        d.d_start::date as d_start,
+        d.repair_date_real::date as d_end,
         --
         d.action,
         d.region,
@@ -61,12 +70,38 @@ operations as (
         d.days_summary
     from documents d
     cross join params
-    where d.direction_date between params.d_start and params.d_end
+    where d.repair_date_real between params.d_start and params.d_end
 
     union all
 
+    -- Средний срок сдачи документов
+    select
+        'to_inscompany' as m,
+        --
+        d.repair_date_real::date as d_start,
+        d.d_documents_send::date as d_end,
+        --
+        d.action,
+        d.region,
+        d.glass_type,
+        --
+        d.id,
+        d.days_repair,
+        d.days_documents,
+        d.days_payment,
+        d.days_summary
+    from documents d
+    cross join params
+    where d.d_documents_send between params.d_start and params.d_end
+
+    union all
+
+    -- Средний срок оплаты
     select
         'pay' as m,
+        --
+        d.d_documents_send::date as d_start,
+        d.pay_date::date as d_end,
         --
         d.action,
         d.region,
@@ -80,4 +115,205 @@ operations as (
     from documents d
     cross join params
     where d.pay_date between params.d_start and params.d_end
+
+    union all
+
+    -- Средний срок полного цикла
+    select
+        'full_process' as m,
+        --
+        d.d_start::date as d_start,
+        d.pay_date::date as d_end,
+        --
+        d.action,
+        d.region,
+        d.glass_type,
+        --
+        d.id,
+        d.days_repair,
+        d.days_documents,
+        d.days_payment,
+        d.days_summary
+    from documents d
+    cross join params
+    where d.pay_date between params.d_start and params.d_end
+),
+
+operations as (
+    select op.*,
+        op.d_end - op.d_start as days
+    from _operations op
+    where op.d_start <= op.d_end
+),
+
+_struct as (
+    select 'ЗАМЕНА' as title,
+        'background-color: #DCDCDC; font-weight: bold;' as row_style,
+        null as glass_type,
+        null as action,
+        null as region
+
+    union all
+
+    select 'Москва' as title,
+        'background-color: #FFDAB9; font-weight: bold;' as row_style,
+        null as glass_type,
+        null as action,
+        null as region
+
+    union all
+
+    select 'Не оригинальное стекло' as title,
+        '' as row_style,
+        'Не оригинальное' as glass_type,
+        'Замена' as action,
+        'Москва' as region
+
+    union all
+
+    select 'Оригинальное стекло' as title,
+        '' as row_style,
+        'Оригинальное' as glass_type,
+        'Замена' as action,
+        'Москва' as region
+
+    union all
+
+    select 'Все стекла' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Замена' as action,
+        'Москва' as region
+
+        union all
+
+    select 'Регионы' as title,
+        'background-color: #FFDAB9; font-weight: bold;' as row_style,
+        null as glass_type,
+        null as action,
+        null as region
+
+    union all
+
+    select 'Не оригинальное стекло' as title,
+        '' as row_style,
+        'Не оригинальное' as glass_type,
+        'Замена' as action,
+        'Регион' as region
+
+    union all
+
+    select 'Оригинальное стекло' as title,
+        '' as row_style,
+        'Оригинальное' as glass_type,
+        'Замена' as action,
+        'Регион' as region
+
+    union all
+
+    select 'Все стекла' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Замена' as action,
+        'Регион' as region
+
+    union all
+
+    select 'Москва/Регионы' as title,
+        'background-color: #FFDAB9; font-weight: bold;' as row_style,
+        null as glass_type,
+        null as action,
+        null as region
+
+    union all
+
+    select 'Не оригинальное стекло' as title,
+        '' as row_style,
+        'Не оригинальное' as glass_type,
+        'Замена' as action,
+        'Итого' as region
+
+    union all
+
+    select 'Оригинальное стекло' as title,
+        '' as row_style,
+        'Оригинальное' as glass_type,
+        'Замена' as action,
+        'Итого' as region
+
+    union all
+
+    select 'Все стекла' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Замена' as action,
+        'Итого' as region
+
+    union all
+
+    select 'РЕМОНТ' as title,
+        'background-color: #DCDCDC; font-weight: bold;' as row_style,
+        null as glass_type,
+        null as action,
+        null as region
+
+    union all
+
+    select 'Москва' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Ремонт' as action,
+        'Москва' as region
+
+    union all
+
+    select 'Регион' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Ремонт' as action,
+        'Регион' as region
+
+    union all
+
+    select 'Москва/Регионы' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Ремонт' as action,
+        'Итого' as region
+
+    union all
+
+    select 'ИТОГО ЗАМЕНА/РЕМОНТ' as title,
+        'background-color: #DCDCDC; font-weight: bold;' as row_style,
+        null as glass_type,
+        null as action,
+        null as region
+
+    union all
+
+    select 'Москва' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Итого' as action,
+        'Москва' as region
+
+    union all
+
+    select 'Регион' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Итого' as action,
+        'Регион' as region
+
+    union all
+
+    select 'Москва/Регионы' as title,
+        '' as row_style,
+        'Итого' as glass_type,
+        'Итого' as action,
+        'Итого' as region
+),
+
+struct as (
+    select s.*, row_number() over() as n_order from _struct s
 )
