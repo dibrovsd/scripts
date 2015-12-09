@@ -26,16 +26,14 @@ gr as (
     cross join params
     where t.product = 'ОСАГО'
         and t.d_issue between params.d_start and params.d_end
-        {% if env.seller_territory == 'call_centre' %}
-            and seller_territory_id = 9
-        {% elif env.seller_territory == 'asan' %}
-            and seller_territory_id != 9
+        {% if env.channel %}
+            and t.channel_root_id = [[env.channel]]::integer
         {% endif %}
 
         {% if 'call_center' in user_params.territory_only %}
-            and t.seller_territory_id = 9
+            and t.channel_root_id = 9
         {% elif 'asan' in user_params.territory_only %}
-            and t.seller_territory_id != 9
+            and t.channel_root_id = 7
         {% endif %}
     group by inscompany_id
 

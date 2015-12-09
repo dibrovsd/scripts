@@ -58,18 +58,20 @@ gr as (
     cross join params
     where (params.inscompany = 0 or s.inscompany_id = params.inscompany)
         and s.d_issue between params.d_start and params.d_end
-        {% if env.seller_territory == 'call_centre' %}
-            and s.seller_territory_id = 9
-        {% elif env.seller_territory == 'asan' %}
-            and s.seller_territory_id != 9
-            and (params.territory_id is null or s.seller_territory_id = params.territory_id)
+
+        {% if env.channel %}
+            and s.channel_root_id = [[env.channel]]::integer
+            {% if env.channel == '7' and env.channel_territory %}
+                and s.channel_territory_id = [[env.channel]]::integer
+            {% endif %}
         {% endif %}
 
         {% if 'call_center' in user_params.territory_only %}
-            and s.seller_territory_id = 9
+            and s.channel_root_id = 9
         {% elif 'asan' in user_params.territory_only %}
-            and s.seller_territory_id != 9
+            and s.channel_root_id = 7
         {% endif %}
+
     group by date_trunc(params.trunc_by, s.d_issue)::date
 )
 

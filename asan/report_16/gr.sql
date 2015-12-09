@@ -12,7 +12,7 @@ with params as (
 -- Группированные данные по id
 gr as (
     select
-        t.seller_territory_id as territory_id,
+        t.channel_territory_id as channel_id,
         t.seller_id,
         --
         count(case when t.project_id = 3 then 1 end) as cnt_property,
@@ -24,21 +24,21 @@ gr as (
     left join contractor_questionnaire q on q.project_id = t.project_id
                                          and q.document_id = t.id
     cross join params
-    where t.seller_territory_id != 9
+    where t.channel_root_id = 7 -- АСАН
         and t.project_id in (3, 4)
         and t.d_issue between params.d_from and params.d_to
         and (params.seller = 0 or params.seller = t.seller_id)
 
-        {% if env.asan %}
-            and t.seller_territory_id in ({{env.asan|join:","}})
+        {% if env.channel %}
+            and t.channel_territory_id in ({{env.channel|join:","}})
         {% endif %}
-    group by t.seller_territory_id, t.seller_id
+    group by t.channel_territory_id, t.seller_id
 )
 
 
 
 select
-    tr.title as territory,
+    ch.title as channel,
     u.last_name ||' '|| u.first_name as seller,
     --
     gr.cnt_property,
@@ -48,15 +48,15 @@ select
     round(f_division(gr.cnt_travel_with_auto, gr.cnt_travel) * 100) || '%' as travel_ratio,
     --
     gr.seller_id,
-    gr.territory_id
+    gr.channel_id
 from gr
-left join reports.territory tr on tr.id = gr.territory_id
+left join base_channel ch on ch.id = gr.channel_id
 left join base_user u on u.id = gr.seller_id
 
 union all
 
 select
-    null as territory,
+    null as channel,
     null as seller,
     --
     sum(gr.cnt_property),
@@ -66,7 +66,7 @@ select
     round(f_division(sum(gr.cnt_travel_with_auto), sum(gr.cnt_travel)) * 100) || '%' as travel_ratio,
     --
     0 as seller_id,
-    0 as territory_id
+    0 as channel_id
 from gr
 
-order by territory nulls last, seller nulls last
+order by channel nulls last, seller nulls last

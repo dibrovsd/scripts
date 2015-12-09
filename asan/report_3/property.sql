@@ -9,15 +9,13 @@ with src as (
     join docflow_documentevent1 t1 on t1.id = t.last_event_id
     join docflow_event1 t2 on t2.id = t1.event_id
     join base_user t3 on t3.id = t1.user_responsible_id
+    join base_channel ch on ch.id = t3.channel_id
     where
         t.deleted = false
         and t.blank_type = 3 -- Недвижимость
         and t2.state_to_id != 4 -- Сдан в СК
-
-        {% if env.seller_territory == 'call_centre' %}
-            and (t3.territory_id = 9 or t3.id = 28)
-        {% elif env.seller_territory == 'asan' %}
-            and t3.territory_id != 9
+        {% if env.channel %}
+            and ch.root_id = [[env.channel]]::integer
         {% endif %}
     group by t1.user_responsible_id, t3.last_name, t.inscompany_id, t.blank_status
 )

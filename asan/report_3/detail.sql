@@ -23,13 +23,7 @@ where
     and t.blank_type = {{get.blank_type}}
     and t.blank_status = {{get.status}}
     and t2.state_to_id != 4 -- Сдан в СК
-    
-
-    {% if env.seller_territory == 'call_centre' %}
-        and (t3.territory_id = 9 or t3.id = 28)
-    {% elif env.seller_territory == 'asan' %}
-        and t3.territory_id != 9
-    {% endif %}
+    and t.channel_root_id = [[env.channel]]
 
     {% if get.inscompany %}
         and t.inscompany_id = {{get.inscompany}}

@@ -8,7 +8,7 @@ sales as (
     from reports.base_sales s
     cross join params
     where s.d_issue between params.d_from and params.d_to
-      and s.seller_territory_id != 9
+      and s.channel_root_id = 7 -- АСАН
 ),
 
 asan_actions as (
@@ -20,13 +20,13 @@ asan_actions as (
 
 sales_gr as (
     select
-        sales.seller_territory_id as territory_id,
+        sales.channel_territory_id as channel_id,
         sales.seller_id,
         count(case when sales.product = 'ОСАГО' then 1 end) as cnt_osago,
         count(case when sales.product = 'Недвижимость' then 1 end) as cnt_realty,
         count(distinct sales.contractor_id) as cnt_contractors
     from sales
-    group by sales.seller_territory_id, sales.seller_id
+    group by sales.channel_territory_id, sales.seller_id
 ),
 
 asan_actions_gr as (
@@ -45,18 +45,18 @@ asan_actions_gr as (
 asan_map as (
     select asan_map.*
     from (
-        select '1_sayli' as asan, 1 as territory, 'ASAN 1' as title union all
-        select '2_sayli' as asan, 2 as territory, 'ASAN 2' as title union all
-        select '3_sayli' as asan, 3 as territory, 'ASAN 3' as title union all
-        select '4_sayli' as asan, 4 as territory, 'ASAN 4' as title union all
-        -- select '5_sayli' as asan, 0 as territory union all
-        select 'berde' as asan, 8 as territory, 'Berde' as title union all
-        select 'gence' as asan, 6 as territory, 'Gence' as title union all
-        select 'sabirabad' as asan, 7 as territory, 'Sabirabad' as title union all
-        select 'sum' as asan, 5 as territory, 'Sumgait' as title
+        select '1_sayli' as asan, 1 as channel, 'ASAN 1' as title union all
+        select '2_sayli' as asan, 2 as channel, 'ASAN 2' as title union all
+        select '3_sayli' as asan, 3 as channel, 'ASAN 3' as title union all
+        select '4_sayli' as asan, 4 as channel, 'ASAN 4' as title union all
+        select '5_sayli' as asan, 68 as channel, 'ASAN 5' as title union all
+        select 'berde' as asan, 8 as channel, 'Berde' as title union all
+        select 'gence' as asan, 6 as channel, 'Gence' as title union all
+        select 'sabirabad' as asan, 69 as channel, 'Sabirabad' as title union all
+        select 'sum' as asan, 5 as channel, 'Sumgait' as title
     ) asan_map
-    {% if env.asan %}
-    where territory in ({{env.asan|join:", "}})
+    {% if env.channel %}
+        where channel in ({{env.channel|join:", "}})
     {% endif %}
 )
 
@@ -64,17 +64,17 @@ select
     asan_map.title as "АСАН",
     u.last_name || ' ' || u.first_name as "Продавец",
     --
-    sales_gr.cnt_osago as "Продаж ОСАГО",
-    sales_gr.cnt_realty as "Продаж Недвижимости",
+    sales_gr.cnt_osago as "ОСАГО",
+    sales_gr.cnt_realty as "Недвижимости",
     --
-    asan_actions_gr.cnt_all as "Операции все",
-    asan_actions_gr.cnt_insurance as "Операции страховые",
+    asan_actions_gr.cnt_all as "Оказанные услуги",
+    asan_actions_gr.cnt_insurance as "Услуги нотариата и регистрция имущества",
     --
     round((f_division(sales_gr.cnt_osago, asan_actions_gr.cnt_insurance) * 100)::numeric, 2) as "Доля ОСАГО",
     round((f_division(sales_gr.cnt_realty, asan_actions_gr.cnt_insurance) * 100)::numeric, 2) as "Доля Недвижимости",
     round((f_division(sales_gr.cnt_contractors, asan_actions_gr.cnt_insurance) * 100)::numeric, 2) as "Доля продаж по услугам"
 from asan_map
-left join sales_gr on sales_gr.territory_id = asan_map.territory
+left join sales_gr on sales_gr.channel_id = asan_map.channel
 left join asan_actions_gr on asan_actions_gr.asan = asan_map.asan
 inner join base_user u on u.id = sales_gr.seller_id
 order by 1,2

@@ -20,17 +20,17 @@ sales as (
         -- ОСАГО
         select t.d_start, t.ins_phone, 'ОСАГО' as product, t.id, t.auto_number, t.d_issue
         from reports.base_osago t
-        where t.seller_territory_id = 9
+        where t.channel_root_id = 9
         -- Уверенный водитель
         union all
         select t.d_start, t.ins_phone, 'Уверенный водитель' as product, t.id, t.auto_number, t.d_issue
         from reports.base_confident_driver t
-        where t.seller_territory_id = 9
+        where t.channel_root_id = 9
         -- Просто КАСКО
         union all
         select t.d_start, t.ins_phone, 'Просто КАСКО' as product, t.id, t.auto_number, t.d_issue
         from reports.base_simple_kasko t
-        where t.seller_territory_id = 9
+        where t.channel_root_id = 9
     ) t
     cross join params
     where t.d_issue between params.d_start and params.d_end

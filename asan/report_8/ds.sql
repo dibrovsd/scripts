@@ -38,16 +38,19 @@ sales as (
         s.seller_id,
         s.product,
         s.s_premium,
-        s.s_discount,
-        s.seller_territory_id
+        s.s_discount
     from reports.base_sales s
     cross join params
     where s.d_issue between params.d_start and params.d_end
 
+    {% if env.channel %}
+        and s.channel_root_id = [[env.channel]]::integer
+    {% endif %}
+
     {% if 'call_center' in user_params.territory_only %}
-        and s.seller_territory_id = 9
+        and s.channel_root_id = 9
     {% elif 'asan' in user_params.territory_only %}
-        and s.seller_territory_id != 9
+        and s.channel_root_id = 7
     {% endif %}
 ),
 
@@ -58,11 +61,6 @@ sales1 as (
             else 0
         end as is_policy
     from sales t
-    {% if env.seller_territory == 'call_centre' %}
-        where seller_territory_id = 9
-    {% elif env.seller_territory == 'asan' %}
-        where seller_territory_id != 9
-    {% endif %}
 ),
 
 sales2 as (

@@ -1,7 +1,7 @@
 with sales as (
     select count(1) as cnt_sales
     from reports.base_osago s
-    where s.seller_territory_id = 9
+    where s.channel_root_id = 9
         and s.seller_id != 51 -- fatima.huseynova
         and s.d_issue > current_date
 )

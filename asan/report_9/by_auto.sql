@@ -17,21 +17,21 @@ with params as (
 -- Сводим продукты
 sales as (
     -- ОСАГО
-    select 'ОСАГО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.seller_territory_id
+    select 'ОСАГО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.channel_root_id
     from reports.base_osago t
     cross join params
     where t.d_issue between params.d_start and params.d_end
 
     -- Уверенный водитель
     union all
-    select 'Уверенный водитель' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.seller_territory_id
+    select 'Уверенный водитель' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.channel_root_id
     from reports.base_confident_driver t
     cross join params
     where t.d_issue between params.d_start and params.d_end
 
     -- Просто КАСКО
     union all
-    select 'Просто КАСКО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.seller_territory_id
+    select 'Просто КАСКО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.channel_root_id
     from reports.base_simple_kasko t
     cross join params
     where t.d_issue between params.d_start and params.d_end
@@ -57,16 +57,14 @@ sales1 as (
         and t.product = [[env.product]]
     {% endif %}
 
-    {% if env.seller_territory == 'call_centre' %}
-        and seller_territory_id = 9
-    {% elif env.seller_territory == 'asan' %}
-        and seller_territory_id != 9
+    {% if env.channel %}
+        and t.channel_root_id = [[env.channel]]::integer
     {% endif %}
 
     {% if 'call_center' in user_params.territory_only %}
-        and t.seller_territory_id = 9
+        and t.channel_root_id = 9
     {% elif 'asan' in user_params.territory_only %}
-        and t.seller_territory_id != 9
+        and t.channel_root_id = 7
     {% endif %}
 
 ),

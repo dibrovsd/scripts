@@ -55,7 +55,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_osago t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 
     -- Недвижимость
@@ -63,7 +63,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_realty t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 
     -- ВЗР
@@ -71,7 +71,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_travel t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 
     -- Уверенный водитель
@@ -79,7 +79,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_confident_driver t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 
     -- Просто КАСКО
@@ -87,7 +87,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_simple_kasko t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 
     -- Пятерочка (Атешгях)
@@ -95,7 +95,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_raider_five t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 
     -- Расширение ОСАГО (Атешгях)
@@ -103,7 +103,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_raider_osago_plus t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 
     -- Супер КАСКО (Атешгях)
@@ -111,7 +111,7 @@ sales as (
     select date_trunc(params.trunc_by, t.d_issue) as dt, t.s_comission, t.s_premium
     from reports.base_raider_super_kasko t
     cross join params
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
         and t.d_issue between params.d_start and params.d_end
 ),
 

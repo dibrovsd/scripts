@@ -25,6 +25,10 @@ with t as (
             when t.inscompany_id in (5,8,12) then 0.3
             else 0.25
         end as comission_rate,
+        -- Канал продаж
+        t.channel_root_id,
+        t.channel_sub_id,
+        t.channel_territory_id,
         -- Доставка
         t.delivery_date,
         t.delivery_time_from,

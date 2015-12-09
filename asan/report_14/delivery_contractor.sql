@@ -23,7 +23,7 @@ from reports.base_sales s
 cross join params
 left join docflow_city city on city.id = s.delivery_city_id
 inner join base_user u on u.id = s.seller_id
-where s.seller_territory_id = 9
+where s.channel_root_id = 9
   and s.contractor_id = params.contractor_id
   --
   and (params.d_issue_from is null

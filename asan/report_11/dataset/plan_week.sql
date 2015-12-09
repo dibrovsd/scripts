@@ -1,7 +1,7 @@
 with sales as (
     select s.seller_id
     from reports.base_osago s
-    where s.seller_territory_id = 9
+    where s.channel_root_id = 9
         and s.seller_id != 51 -- fatima.huseynova
         and s.d_issue > date_trunc('week', current_date)
 )

@@ -34,7 +34,7 @@ sales as (
     from reports.base_sales t
     cross join params
     where t.d_issue between params.d_start and params.d_end
-      and seller_territory_id = 9
+      and t.channel_root_id = 9
     group by t.seller_id
 )
 

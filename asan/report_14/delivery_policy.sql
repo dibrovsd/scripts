@@ -19,7 +19,7 @@ sales as (
         s.s_premium - s.s_discount as "Итоговая премия"
     from reports.base_sales s
     cross join params
-    where s.seller_territory_id = 9
+    where s.channel_root_id = 9
       and s.contractor_id = params.contractor_id
       and (params.d_issue_from is null or s.d_issue between params.d_issue_from and params.d_issue_to)
       and (params.delivery_date_from is null or s.delivery_date between params.delivery_date_from

@@ -1,0 +1,63 @@
+1) Скопировать fixtures каналы продаж с dev
+
+2) Скопировать территорию юзеров в канал продаж
+    update base_user set channel_id = territory_id
+
+3) Обновить кэш каналов продаж (уровни)
+    from base.models import Channel
+    for ch in Channel.objects.all():
+        ch.update_levels()
+        ch.save()
+
+4) Заполнить приложение доставки договоров данными
+    from delivery.utils import create_delivery
+    from delivery.models import Product
+    from docflow.models import Document2, Document3, Document4, Document11, Document12
+
+    Product.objects.all().delete()
+
+    qs = Document2.objects.filter(user_creator__territory_id=9, d_issue__isnull=False)
+
+    for d in qs:
+        create_delivery(d)
+
+    qs = Document3.objects.filter(user_creator__territory_id=9, d_issue__isnull=False)
+    for d in qs:
+        create_delivery(d)
+
+    qs = Document4.objects.filter(user_creator__territory_id=9, d_issue__isnull=False)
+    for d in qs:
+        create_delivery(d)
+
+
+    qs = Document11.objects.filter(user_creator__territory_id=9, d_issue__isnull=False)
+    for d in qs:
+        create_delivery(d)
+
+    qs = Document12.objects.filter(user_creator__territory_id=9, d_issue__isnull=False)
+    for d in qs:
+        create_delivery(d)
+
+5) Проставить в полисах каналы продаж
+update docflow_document2
+set channel_root_id = root_id,
+    channel_sub_id = sub_id,
+    channel_territory_id = territory_id
+from (
+    select
+        s.id as document_id,
+        ch.root_id,
+        ch.sub_id,
+        ch.territory_id
+    from reports.base_sales s
+    inner join docflow_document2 d on d.id = s.id
+    inner join base_channel ch on ch.id = case
+                                             when s.seller_territory_id = 10 then 68
+                                             when s.seller_territory_id = 13 then 70
+                                             when s.seller_territory_id = 14 then 71
+                                             when s.seller_territory_id = 15 then 72
+                                             else s.seller_territory_id
+                                          end
+        where s.product = 'ОСАГО'
+) src
+where document_id = id

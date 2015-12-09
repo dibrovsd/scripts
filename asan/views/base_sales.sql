@@ -22,6 +22,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                2 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -51,6 +55,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                3 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -80,6 +88,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                4 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -109,6 +121,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                11 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -137,6 +153,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                12 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -170,6 +190,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                2 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -199,6 +223,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                2 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -228,6 +256,10 @@ create or replace view reports.base_sales as
                t.delivery_city_id,
                t.contractor_id,
                2 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
                -- Доставка
                t.delivery_date,
                t.delivery_time_from,
@@ -322,6 +354,10 @@ create or replace view reports.base_sales as
                 then s.s_premium * s.replace_comission
             else s.s_comission_no_discount
         end as s_comission_no_discount,
+        -- Канал продаж
+        s.channel_root_id,
+        s.channel_sub_id,
+        s.channel_territory_id,
         -- Доставка
         s.delivery_date,
         s.delivery_time_from,

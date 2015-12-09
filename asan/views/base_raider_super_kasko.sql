@@ -17,6 +17,10 @@ select
     t1.contractor_id,
     t1.bso_id,
     t1.s7_id,
+    -- Канал продаж
+    t1.channel_root_id,
+    t1.channel_sub_id,
+    t1.channel_territory_id,
     -- Доставка
     t1.delivery_date,
     t1.delivery_time_from,

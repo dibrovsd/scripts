@@ -11,23 +11,24 @@ with params as (
 
         {% endif %}
 
-        -- to_date('01.01.2015', 'dd.mm.yyyy') as d_start,
-        -- current_date as d_end
-
 ),
 
 collect as (
     select
         s.s_premium,
-        s.seller_territory_id,
         s.product
     from reports.base_sales s
     cross join params
     where s.d_issue between params.d_start and params.d_end
+
+    {% if env.channel %}
+        and s.channel_root_id = [[env.channel]]::integer
+    {% endif %}
+
     {% if 'call_center' in user_params.territory_only %}
-        and s.seller_territory_id = 9
+        and s.channel_root_id = 9
     {% elif 'asan' in user_params.territory_only %}
-        and s.seller_territory_id != 9
+        and s.channel_root_id = 7
     {% endif %}
 )
 
@@ -35,9 +36,4 @@ select
     product,
     sum(s_premium) as s_premium
 from collect
-{% if env.seller_territory == 'call_centre' %}
-    where seller_territory_id = 9
-{% elif env.seller_territory == 'asan' %}
-    where seller_territory_id != 9
-{% endif %}
 group by product

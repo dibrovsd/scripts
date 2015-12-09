@@ -16,13 +16,13 @@ from reports.base_sales t
 left join contractor_questionnaire q on q.project_id = t.project_id
                                      and q.document_id = t.id
 cross join params
-where t.seller_territory_id != 9
+where t.channel_root_id = 7 -- АСАН
     and t.project_id = 4
     and t.d_issue between params.d_from and params.d_to
     and (params.seller = 0 or params.seller = t.seller_id)
 
-    {% if env.asan %}
-        and t.seller_territory_id in ({{env.asan|join:","}})
+    {% if env.channel %}
+        and t.channel_territory_id in ({{env.channel|join:","}})
     {% endif %}
 
 group by case when q.auto_number != '' then 'С авто' else 'Без авто' end

@@ -45,7 +45,7 @@ sales_gr as (
         date_trunc('day', t.d_issue) as d_issue,
         count(1) as cnt
     from reports.base_osago t
-    where t.seller_territory_id = 9
+    where t.channel_root_id = 9
     group by date_trunc('day', t.d_issue)
 ),
 

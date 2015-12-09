@@ -16,6 +16,10 @@ select
     t.n_contract,
     t.contractor_id,
     t.s7_id,
+    -- Канал продаж
+    t.channel_root_id,
+    t.channel_sub_id,
+    t.channel_territory_id,
     -- Доставка
     t.delivery_date,
     t.delivery_time_from,

@@ -14,33 +14,7 @@ with params as (
 
         [[env.group_by]]::varchar as trunc_by,
         interval '1 {{env.group_by}}' as interv,
-        [[env.inscompany]]::int as inscompany,
-
-        {# Территория #}
-        {% if env.seller_territory == 'call_centre' %}
-            'call_center'::varchar as territory,
-            1::numeric as exp_divider,
-
-        {% elif env.seller_territory == 'asan' %}
-            'asan'::varchar as territory,
-
-            {% if env.territory_id %}
-                10::numeric as exp_divider,
-            {% else %}
-                1::numeric as exp_divider,
-            {% endif %}
-
-        {% else %}
-            null::varchar as territory,
-            1::numeric as exp_divider,
-
-        {% endif %}
-
-        {% if env.territory_id %}
-            [[env.territory_id]]::int as territory_id
-        {% else %}
-            null::int as territory_id
-        {% endif %}
+        [[env.inscompany]]::int as inscompany
 
 
         -- to_date('01.08.2015', 'dd.mm.yyyy')::date as d_start,
@@ -64,11 +38,21 @@ expenses as (
         select
             date_trunc(params.trunc_by, exp.day)::date as dt,
             exp.expense_type,
-            sum(exp.value / params.exp_divider) as exp_value
+            sum(exp.value {% if env.channel == '7' and env.territory_id %} / 10 {% endif %}) as exp_value
         from reports.base_expense exp
         cross join params
         where exp.day between params.d_start and params.d_end
-            and (params.territory is null or exp.segment = params.territory)
+
+            {% if env.channel == '9' %}
+                and exp.segment = 'call_center'
+
+            {% elif env.channel == '7' %}
+                and exp.segment = 'asan'
+
+            {% elif env.channel == '15' %}
+                and exp.segment = 'notarius' -- Пока такого сегмента нет
+
+            {% endif %}
 
             {% if 'call_center' in user_params.territory_only %}
                 and exp.segment = 'call_center'
@@ -106,27 +90,24 @@ sales as (
         date_trunc(params.trunc_by, s.d_issue) as dt,
         s.s_comission,
         s.s_premium,
-        s.seller_territory_id,
         s.s_discount,
         s.product
     from reports.base_sales s
     cross join params
     where s.d_issue between params.d_start and params.d_end
         and (params.inscompany = 0 or s.inscompany_id = params.inscompany)
-        and (
-            params.territory is null
-            or params.territory = 'asan' and s.seller_territory_id != 9
-                and (
-                    params.territory_id is null
-                    or s.seller_territory_id = params.territory_id
-                )
-            or params.territory = 'call_center' and s.seller_territory_id = 9
-        )
+
+        {% if env.channel %}
+            and s.channel_root_id = [[env.channel]]::integer
+            {% if env.channel == '7' and env.channel_territory %}
+                and s.channel_territory_id = [[env.channel]]::integer
+            {% endif %}
+        {% endif %}
 
         {% if 'call_center' in user_params.territory_only %}
-            and s.seller_territory_id = 9
+            and s.channel_root_id = 9
         {% elif 'asan' in user_params.territory_only %}
-            and s.seller_territory_id != 9
+            and s.channel_root_id = 7
         {% endif %}
 ),
 

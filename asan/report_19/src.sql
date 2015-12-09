@@ -18,6 +18,10 @@ to_notarius as (
         where u.id = e.user_responsible_id
         and ch.root_id = 15 -- передан Нотариусу
     )
+
+    {% if env.inscompany and env.inscompany != '0' %}
+        and d.inscompany_id = [[env.inscompany]]::integer
+    {% endif %}
 ),
 
 -- Передан Выдан продавцу > Распределение

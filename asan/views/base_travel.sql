@@ -22,6 +22,10 @@ with t as (
         t.ins_person_pin,
         t.ins_person_gender,
         t.ins_phone,
+        -- Канал продаж
+        t.channel_root_id,
+        t.channel_sub_id,
+        t.channel_territory_id,
         -- Доставка
         t.delivery_date,
         t.delivery_time_from,

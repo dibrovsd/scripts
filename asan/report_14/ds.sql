@@ -56,7 +56,7 @@ left join docflow_inscompany inscompany on inscompany.id = s.inscompany_id
 left join base_policydelivery info on info.project_id = s.project_id
                                    and info.document_id = s.id
 cross join params
-where s.seller_territory_id = 9
+where s.channel_root_id = 9
   and (params.d_issue_from is null or s.d_issue between params.d_issue_from and params.d_issue_to)
   and (params.delivery_date_from is null or s.delivery_date between params.delivery_date_from
                                                                     and params.delivery_date_to)
