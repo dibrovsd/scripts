@@ -4,12 +4,8 @@ with sales as (
         count(1) as cnt
     from reports.base_sales s
     where s.channel_root_id = 9
-        and s.seller_id != 51 -- fatima.huseynova
-        and s.seller_id != 27 -- Shahsuvarova Lala
-        and s.seller_id != 29 -- Hasanova Sabina
-        and s.seller_id != 58 -- Stajer
-        and s.seller_id != 33 -- Babayeva Ayna
-        and s.seller_id != 28 -- Куратор КЦ
+        -- fatima.huseynova, Shahsuvarova Lala, Hasanova Sabina, Stajer, Babayeva Ayna, Куратор КЦ
+        and s.seller_id not in (51, 27, 29, 58, 33, 28)
         and s.d_issue > date_trunc('week', current_date)
     group by s.seller_id
 )

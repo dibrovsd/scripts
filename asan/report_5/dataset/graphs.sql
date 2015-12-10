@@ -12,8 +12,7 @@ with params as (
         {% endif %}
         [[env.group_by]]::varchar as trunc_by,
         interval '1 {{env.group_by}}' as interv,
-        [[env.inscompany]]::int as inscompany,
-        {% if env.territory_id %}[[env.territory_id]]{% else %}null{% endif %}::int as territory_id
+        [[env.inscompany]]::int as inscompany
 
         -- to_date('01.01.2015', 'dd.mm.yyyy') as d_start,
         -- current_date + interval '1 day - 1 second' as d_end,
@@ -56,10 +55,7 @@ where (params.inscompany = 0 or s.inscompany_id = params.inscompany)
     and s.d_issue between params.d_start and params.d_end
 
     {% if env.channel %}
-        and s.channel_root_id = [[env.channel]]::integer
-        {% if env.channel == '7' and env.channel_territory %}
-            and s.channel_territory_id = [[env.channel]]::integer
-        {% endif %}
+        and [[env.channel]]::integer in (s.channel_root_id, s.channel_sub_id, s.channel_territory_id)
     {% endif %}
 
     {% if 'call_center' in user_params.territory_only %}

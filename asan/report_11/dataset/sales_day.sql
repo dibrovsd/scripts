@@ -4,13 +4,9 @@ with users as (
         u.last_name ||' '|| u.first_name as user
     from base_user u
     inner join base_channel ch on ch.id = u.channel_id
-    where ch.root_id = 9
-        and u.id != 51 -- fatima.huseynova
-        and u.id != 27 -- Shahsuvarova Lala
-        and u.id != 29 -- Hasanova Sabina
-        and u.id != 58 -- Stajer
-        and u.id != 33 -- Babayeva Ayna
-        and u.id != 28 -- Куратор КЦ
+    where u.channel_id = 9
+        -- fatima.huseynova, Shahsuvarova Lala, Hasanova Sabina, Stajer, Babayeva Ayna, Куратор КЦ
+        and u.id not in (51, 27, 29, 58, 33, 28)
 ),
 
 sales as (

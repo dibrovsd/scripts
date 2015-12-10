@@ -41,10 +41,7 @@ sales as (
         and s.d_issue between params.d_start and params.d_end
 
         {% if env.channel %}
-            and s.channel_root_id = [[env.channel]]::integer
-            {% if env.channel == '7' and env.channel_territory %}
-                and s.channel_territory_id = [[env.channel]]::integer
-            {% endif %}
+            and [[env.channel]]::integer in (s.channel_root_id, s.channel_sub_id, s.channel_territory_id)
         {% endif %}
 
         {% if 'call_center' in user_params.territory_only %}
