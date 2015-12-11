@@ -166,6 +166,38 @@ create or replace view reports.base_sales as
                t.delivery_comments
         from reports.base_simple_kasko t
 
+        -- Медицина
+        union all
+        select t.id,
+               t.seller_id,
+               t.inscompany_id,
+               'Медицина' as product,
+               null as bso_id,
+               t.s7_id,
+               t.s_premium, 0 as s_discount,
+               t.seller_territory_id as current_territory_id,
+               t.d_issue,
+               t.s_comission,
+               t.s_comission as s_comission_no_discount,
+               t.ins_person,
+               t.ins_phone,
+               t.n_contract,
+               t.delivery_city_id,
+               t.contractor_id,
+               9 as project_id,
+               -- Канал продаж
+               t.channel_root_id,
+               t.channel_sub_id,
+               t.channel_territory_id,
+               -- Доставка
+               t.delivery_date,
+               t.delivery_time_from,
+               t.delivery_time_to,
+               t.delivery_region,
+               t.delivery_address,
+               t.delivery_comments
+        from reports.base_medicine t
+
         /**
         * Райдеры
         */

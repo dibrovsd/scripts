@@ -10,7 +10,7 @@ where 1 = 1
     and t.channel_root_id = 9
 
 {% elif env.channel %}
-    and t.channel_root_id = [[env.channel]]::integer
+    and [[env.channel]]::integer in (t.channel_root_id, t.channel_sub_id, t.channel_territory_id)
 
 {% endif %}
 

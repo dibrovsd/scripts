@@ -17,21 +17,24 @@ with params as (
 -- Сводим продукты
 sales as (
     -- ОСАГО
-    select 'ОСАГО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.channel_root_id
+    select 'ОСАГО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id,
+        t.ins_person_pin, t.ins_person_gender, t.channel_root_id, t.channel_sub_id, t.channel_territory_id
     from reports.base_osago t
     cross join params
     where t.d_issue between params.d_start and params.d_end
 
     -- Уверенный водитель
     union all
-    select 'Уверенный водитель' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.channel_root_id
+    select 'Уверенный водитель' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id,
+        t.ins_person_pin, t.ins_person_gender, t.channel_root_id, t.channel_sub_id, t.channel_territory_id
     from reports.base_confident_driver t
     cross join params
     where t.d_issue between params.d_start and params.d_end
 
     -- Просто КАСКО
     union all
-    select 'Просто КАСКО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id, t.ins_person_pin, t.ins_person_gender, t.channel_root_id
+    select 'Просто КАСКО' as product, t.ins_person_birthday, t.auto_createyear, t.auto_mark_id,
+        t.ins_person_pin, t.ins_person_gender, t.channel_root_id, t.channel_sub_id, t.channel_territory_id
     from reports.base_simple_kasko t
     cross join params
     where t.d_issue between params.d_start and params.d_end
@@ -58,7 +61,7 @@ sales1 as (
     {% endif %}
 
     {% if env.channel %}
-        and t.channel_root_id = [[env.channel]]::integer
+        and [[env.channel]]::integer in (t.channel_root_id, t.channel_sub_id, t.channel_territory_id)
     {% endif %}
 
     {% if 'call_center' in user_params.territory_only %}

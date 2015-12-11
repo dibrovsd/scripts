@@ -23,7 +23,7 @@ cross join params
 inner join base_user t1 on t1.id = t.seller_id
 where t.d_issue between params.d_start and params.d_end
     {% if env.channel %}
-        and t.channel_root_id = [[env.channel]]::integer
+        and [[env.channel]]::integer in (t.channel_root_id, t.channel_sub_id, t.channel_territory_id)
     {% endif %}
 
     {% if 'call_center' in user_params.territory_only %}

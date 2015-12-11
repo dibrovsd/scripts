@@ -38,7 +38,7 @@ where t.channel_root_id = 7 -- АСАН
     and (params.seller = 0 or params.seller = t.seller_id)
 
     {% if env.channel %}
-        and t.channel_territory_id in ({{env.channel|join:","}})
+        and s.channel_territory_id in ({{env.channel|join:", "}})
     {% endif %}
 
     --

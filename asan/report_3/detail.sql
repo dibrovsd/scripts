@@ -15,15 +15,18 @@ join docflow_documentevent1 t1 on t1.id = t.last_event_id
 join docflow_event1 t2 on t2.id = t1.event_id
 join docflow_state1 t4 on t4.id = t2.state_to_id
 join base_user t3 on t3.id = t1.user_responsible_id
+join base_channel ch on ch.id = t3.channel_id
 --
 join docflow_libtable1_2 lib2 on lib2.id = t.blank_serie_id
 join docflow_inscompany ins on ins.id = t.inscompany_id
-where
-    t.deleted = false
+where t.deleted = false
     and t.blank_type = {{get.blank_type}}
     and t.blank_status = {{get.status}}
     and t2.state_to_id != 4 -- Сдан в СК
-    and t.channel_root_id = [[env.channel]]
+
+    {% if env.channel %}
+        and [[env.channel]]::integer in (ch.root_id, ch.sub_id, ch.territory_id)
+    {% endif %}
 
     {% if get.inscompany %}
         and t.inscompany_id = {{get.inscompany}}

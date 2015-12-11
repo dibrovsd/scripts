@@ -8,7 +8,10 @@ sales as (
     from reports.base_sales s
     cross join params
     where s.d_issue between params.d_from and params.d_to
-      and s.channel_root_id = 7 -- АСАН
+        {% if env.channel %}
+            and s.channel_territory_id in ({{env.channel|join:", "}})
+        {% endif %}
+        and s.channel_root_id = 7 -- АСАН
 ),
 
 asan_actions as (

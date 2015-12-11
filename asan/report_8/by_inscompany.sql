@@ -24,7 +24,7 @@ sales as (
     cross join params
     where s.d_issue between params.d_start and params.d_end
         {% if env.channel %}
-            and s.channel_root_id = [[env.channel]]::integer
+            and [[env.channel]]::integer in (s.channel_root_id, s.channel_sub_id, s.channel_territory_id)
         {% endif %}
 
         {% if 'call_center' in user_params.territory_only %}

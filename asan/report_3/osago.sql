@@ -15,7 +15,7 @@ with src as (
         and t.blank_type = 1 -- ОСАГО
         and t2.state_to_id != 4 -- Сдан в СК
         {% if env.channel %}
-            and ch.root_id = [[env.channel]]::integer
+            and [[env.channel]]::integer in (ch.root_id, ch.sub_id, ch.territory_id)
         {% endif %}
     group by t1.user_responsible_id, t3.last_name, t.inscompany_id, t.blank_status
 )
