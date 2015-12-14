@@ -330,31 +330,44 @@ create or replace view reports.base_sales as
     calculated1 as (
         select s.*,
             case
-                -- AXA после сентября более 35000 в месяц
-                when s.inscompany_id = 11
-                    and s.product = 'ОСАГО'
-                    and s.d_issue >= to_date('01.09.2015', 'dd.mm.yyyy')
-                    and s_premium_month >= 35000
-                        then 0.355
+                -- AXA Недвижка
+                when s.inscompany_id = 11 and s.product = 'Недвижимость' then
+                    case
+                        when s_premium_month > 7500 then 0.4
+                        else 0.35
+                    end
 
-                -- AXA после сентября более 25000 в месяц
-                when s.inscompany_id = 11
-                    and s.product = 'ОСАГО'
-                    and s.d_issue >= to_date('01.09.2015', 'dd.mm.yyyy')
-                    and s_premium_month >= 25000
-                        then 0.345
-
-                -- AXA более 15000 в месяц
-                when s.inscompany_id = 11
-                    and s.product = 'ОСАГО'
-                    and s_premium_month >= 15000
-                        then 0.335
+                -- AXA ОСАГО
+                when s.inscompany_id = 11 and s.product = 'ОСАГО' then
+                    case
+                        when s_premium_month > 100000 then 0.38
+                        when s_premium_month > 75000 then 0.37
+                        when s_premium_month > 35000 then 0.355
+                        when s_premium_month > 25000 then 0.345
+                        when s_premium_month > 15000 then 0.335
+                        else 0.3
+                    end
 
                 -- АЗСыгорта после октября
-                when s.inscompany_id = 3
-                    and s.product = 'ОСАГО'
-                    and s.d_issue >= to_date('01.10.2015', 'dd.mm.yyyy')
-                        then 0.35
+                when s.inscompany_id = 3 and s.product = 'ОСАГО' then
+                    case
+                        when s.d_issue >= to_date('01.10.2015', 'dd.mm.yyyy') then 0.35
+                        else 0.3
+                    end
+
+                -- Pasha
+                when s.inscompany_id = 6 and s.product in ('ОСАГО', 'Недвижимость') then
+                    case
+                        when s.d_issue >= to_date('01.09.2015', 'dd.mm.yyyy') then 0.3
+                        else 0.25
+                    end
+
+                -- ATA ОСАГО + Недвижка по нотариусу
+                when s.inscompany_id = 8
+                     and s.product in ('ОСАГО', 'Недвижимость')
+                     and channel_root_id = 15
+                    then 0.35
+
             end as replace_comission
         from calculated s
     )

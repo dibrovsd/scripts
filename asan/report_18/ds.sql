@@ -39,7 +39,8 @@ asan_actions_gr as (
         sum(case
                 when a.action in ('K  -  Notariat fəaliyyəti', 'L  -  Daşınmaz əmlakla bağlı əməliyyatların qeydiyyatı')
                 then a.served_users
-        end) as cnt_insurance
+        end) as cnt_realty_notar,
+        sum(case when a.action = 'S  -  Sığorta' then a.served_users end) as cnt_sigorta
     from asan_actions a
     group by a.asan
 ),
@@ -71,11 +72,13 @@ select
     sales_gr.cnt_realty as "Недвижимости",
     --
     asan_actions_gr.cnt_all as "Оказанные услуги",
-    asan_actions_gr.cnt_insurance as "Услуги нотариата и регистрция имущества",
+    asan_actions_gr.cnt_realty_notar as "Услуги нотариата и имущества",
     --
-    round((f_division(sales_gr.cnt_osago, asan_actions_gr.cnt_insurance) * 100)::numeric, 2) as "Доля ОСАГО",
-    round((f_division(sales_gr.cnt_realty, asan_actions_gr.cnt_insurance) * 100)::numeric, 2) as "Доля Недвижимости",
-    round((f_division(sales_gr.cnt_contractors, asan_actions_gr.cnt_insurance) * 100)::numeric, 2) as "Доля продаж по услугам"
+    round((f_division(sales_gr.cnt_osago, asan_actions_gr.cnt_realty_notar) * 100)::numeric, 2) as "Доля ОСАГО",
+    round((f_division(sales_gr.cnt_realty, asan_actions_gr.cnt_realty_notar) * 100)::numeric, 2) as "Доля Недвижимости",
+    --
+    asan_actions_gr.cnt_sigorta as "Оказанные услуги по страхованию",
+    round((f_division(sales_gr.cnt_contractors, asan_actions_gr.cnt_sigorta) * 100)::numeric, 2) as "Доля продаж по страх. услугам"
 from asan_map
 left join sales_gr on sales_gr.channel_id = asan_map.channel
 left join asan_actions_gr on asan_actions_gr.asan = asan_map.asan

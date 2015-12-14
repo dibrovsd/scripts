@@ -15,6 +15,7 @@ select
     d.state as "Этап",
     d.city as "Город",
     d.stoa as "СТОА",
+    d.s_spare_parts as "Цена закупки запасных частей",
     d.curator as "Куратор",
     d.deductible as "Франшиза",
     d.responsible as "Ответственный",

@@ -43,6 +43,7 @@ create or replace view reports.v_document as
            de.d_create as event_create,
            d.pay_date,
     	   d.pay_sum,
+           d.s_spare_parts,
            inscompany.title as inscompany,
            d.auto_createyear,
            auto_mark.title as auto_mark,

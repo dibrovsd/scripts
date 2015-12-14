@@ -46,6 +46,7 @@ select
     d.handling_type as "Тип обращений",
     d.responsible as "Ответственный",
     d.curator as "Куратор",
+    d.s_spare_parts as "Цена закупки запасных частей",
     d.direction_get_date::date as "Дата получения направления",
     d.inspection_date::date as "Дата осмотра (план)",
     d.inspection_date_real::date as "Дата осмотра (факт)",
