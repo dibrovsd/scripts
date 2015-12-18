@@ -43,7 +43,7 @@ select d.id,
        d.damages_action as "Вид работ"
 from reports.v_document d
 cross join params
-where d.inscompany_id is not null
+where 1 = 1
     and (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
     and (params.direction_stoa = 0 or d.stoa_id = params.direction_stoa)
     and (params.curator = 0 or d.curator_id = params.curator)

@@ -14,3 +14,7 @@ pg_restore --dbname=django_hosting --format=c --single-transaction --host=localh
 pg_dump --format=c --host=localhost --username=django --table=tmp.base_osago asan > asan_base_osago.bk
 
 pg_restore --dbname=crm --format=c --single-transaction --host=localhost --username=django < asan_base_osago.bk
+
+# Схему
+pg_dump --format=c --host=localhost --username=django --schema=asan asan > ~/asan.bk
+pg_restore --dbname=travel --format=c --single-transaction --host=localhost --username=django < ~/asan.bk

@@ -118,7 +118,7 @@ combined as (
 
     select 'in' as measure,
         d_create,
-        null::integer as inscompany_id,
+        0 as inscompany_id,
         sum(cnt) as cnt
     from incoming
     group by d_create
@@ -213,7 +213,7 @@ select
     {% endfor %}
     -- sum(case when t.measure = 'in' and t.inscompany_id = 1 then cnt end) as "Согласие",
 
-    sum(case when t.measure = 'in' and t.inscompany_id is null then cnt end) as "Итого вход",
+    sum(case when t.measure = 'in' and t.inscompany_id = 0 then cnt end) as "Итого вход",
     -- Выход
     sum(case when t.measure = 'out_repair' then cnt end) as "Выход (ремонт)",
     sum(case when t.measure = 'out_wait_paymenet' then cnt end) as "Выход (ожидание оплаты)",
