@@ -50,7 +50,8 @@ details as (
         d.curator as "Куратор",
         d.damages_action as "Вид работ",
         d.replace_glass_glass_type as "Вид стекла на замену",
-        d.handling_type as "Тип обращений"
+        d.handling_type as "Тип обращений",
+        d.s_spare_parts as "Цена закупки запасных частей"
         {% if 'events_' in get.dt %}
             ,de.d_create as "Дата операции"
             ,st_from.title as "Откуда"

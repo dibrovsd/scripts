@@ -15,6 +15,7 @@ select
     d.damages_action as "Вид работ",
     d.replace_glass_glass_type as "Вид стекла на замену",
     d.handling_type as "Тип обращений",
+    d.s_spare_parts as "Цена закупки запасных частей",
     --
     lib.title as "Тип задачи",
     t.d_create as "Создана",

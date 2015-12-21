@@ -25,6 +25,8 @@ select
     d.repair_date_real::date as "Дата ремонта (факт)",
     d.d_documents_send::date as "Дата передачи оригиналов",
     d.s_repair_all as "Итого по заказ-наряду",
+    d.s_repair_glass as "Стоимость стекла",
+    d.s_repair_work as "Стоимость работ",
     d.pay_date as "Дата оплаты",
     d.pay_sum as "Сумма оплаты",
     d.replace_glass_glass_type as "Вид стекла на замену",
