@@ -51,6 +51,7 @@ create or replace view reports.v_document as
            d.auto_number,
            d.direction_deductible as deductible,
            handling_type.title as handling_type,
+           d.comission,
            --
            st.title as state,
            u.last_name ||' '|| u.first_name as responsible,

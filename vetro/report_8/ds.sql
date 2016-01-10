@@ -43,7 +43,8 @@ select
     d.s_repair_glass as "Стоимость стекла",
     d.s_repair_work as "Стоимость работ",
     d.s_repair_all as "Итого по заказ-наряду",
-    d.s_spare_parts as "Цена закупки запасных частей"
+    d.s_spare_parts as "Цена закупки запасных частей",
+    d.comission as "Комиссия РАВТ"
 from reports.v_document d
 cross join params
 where (params.city_auto_host = 0 or d.city_auto_host_id = params.city_auto_host)
